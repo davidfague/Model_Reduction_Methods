@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 
 # Project Imports
-from cell_inference.cells.stylizedcell import StylizedCell
+from cells.stylizedcell import StylizedCell
 
 h.load_file('stdrun.hoc')
 
