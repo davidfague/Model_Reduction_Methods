@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 
 # Project Imports
-from cell_inference.cells.stylizedcell import StylizedCell
+from cells.stylizedcell import StylizedCell
 
 h.load_file('stdrun.hoc')
 
@@ -20,7 +20,10 @@ class PassiveCell(StylizedCell):
         vrest: reversal potential of leak channel for all segments
         """
         super().__init__(geometry, **kwargs)
-        self.set_channels()
+        if passive == True:
+            pass
+        else:
+            self.set_channels()
 
     def set_channels(self) -> None:
         """Define biophysical properties, insert channels"""
