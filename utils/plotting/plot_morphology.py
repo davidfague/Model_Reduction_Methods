@@ -4,9 +4,9 @@ from matplotlib.axes import Axes
 import numpy as np
 from typing import Union, Optional, List, Tuple
 
-from cell_inference.utils.currents.ecp import move_position
-from cell_inference.cells.simulation import Simulation
-from cell_inference.cells.stylizedcell import StylizedCell
+from .utils.currents.ecp import move_position
+from cells.simulation import Simulation
+from cells.stylizedcell import StylizedCell
 
 
 def plot_morphology(sim: Optional[Simulation] = None, cellid: Optional[int] = 0, cell: Optional[StylizedCell] = None,
