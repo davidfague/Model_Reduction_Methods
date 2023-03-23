@@ -1,3 +1,18 @@
+
+import collections
+import itertools as it
+import logging
+import math
+import re
+import cmath
+from decimal import Decimal
+
+import numpy as np
+import neuron
+from neuron import h
+h.load_file("stdrun.hoc")
+
+
 CableParams = collections.namedtuple('CableParams',
                                      'length, diam, space_const,'
                                      'cm, rm, ra, e_pas, electrotonic_length, type, furcation_x'
