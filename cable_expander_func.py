@@ -79,16 +79,16 @@ def cable_expander(original_cell,
 
     if PP_params_dict is None:
         PP_params_dict = {}
-    print('init')
+#     print('init')
     h.init()
     
     model_obj_name = load_model(model_filename)
     
-    print('model loaded')
+#     print('model loaded')
     # finds soma properties
     soma = original_cell.soma[0] if original_cell.soma.hname()[-1] == ']' else original_cell.soma
-    print('soma found')
-    print(soma.cm)
+#     print('soma found')
+#     print(soma.cm)
     
 
     soma_cable = CableParams(length=soma.L, diam=soma.diam, space_const=None,
@@ -96,27 +96,25 @@ def cable_expander(original_cell,
                              electrotonic_length=None,type='soma',furcation_x=None)
 
     has_apical = len(list(original_cell.hoc_model.apical)) != 0
-    print('has_apical:', has_apical)
+#     print('has_apical:', has_apical)
 
     soma_ref = h.SectionRef(sec=soma)
     sections_to_keep, is_section_to_keep_soma_parent, soma_sections_to_keep_x = find_and_disconnect_sections_to_keep(soma_ref,sections_to_expand)
-    for sec in original_cell.hoc_model.all:
-      print('original_cell_section: ',sec)
-    print('sections_to_keep: ',sections_to_keep)
-    print('sections_to_expand: ',sections_to_expand)
+#     print('sections_to_keep: ',sections_to_keep)
+#     print('sections_to_expand: ',sections_to_expand)
     roots_of_subtrees, num_of_subtrees = gather_subtrees(soma_ref)
 # # ************************************stopping point today*********************************
-    print('disconnected kept sections')
+#     print('disconnected kept sections')
     sections_to_delete, section_per_subtree_index, mapping_sections_to_subtree_index = \
         gather_cell_subtrees(sections_to_expand)
     
 
     # preparing for expansion
-    print('mapping_sections_to_subtree_index: ',mapping_sections_to_subtree_index)
+#     print('mapping_sections_to_subtree_index: ',mapping_sections_to_subtree_index)
 
     # remove active conductances and get seg_to_mech dictionary
     segment_to_mech_vals=create_segments_to_mech_vals(sections_to_expand) ######################################***************** Check
-    # print('segment_to_mech_vals: ',segment_to_mech_vals)
+#     print('segment_to_mech_vals: ',segment_to_mech_vals)
 
     # disconnects all the sections_to_expand from the soma
     subtrees_xs = []
@@ -552,7 +550,7 @@ def find_and_disconnect_sections_to_keep(soma_ref,sections_to_expand):
     '''Searching for sections to keep, they can be a child of the soma or a parent of the soma.'''
     sections_to_keep, is_section_to_keep_soma_parent, soma_sections_to_keep_x  = [], [], []
     for sec in soma_ref.child:
-        print('original_sec:',sec)
+#         print('original_sec:',sec)
         # name = sec.hname().lower()
         if sec not in sections_to_expand:
             print('keep this section')
@@ -791,7 +789,7 @@ def adjust_new_tree_synapses(num_of_subtrees, roots_of_subtrees,
 
     # a list of baskets of synapses, each basket in the list will hold the
     # synapses of the subtree of the corresponding basket index
-    print('num_sections_to_expand:',num_sections_to_expand)
+#     print('num_sections_to_expand:',num_sections_to_expand)
     baskets = [[] for _ in num_sections_to_expand]
     soma_synapses_syn_to_netcon = {}
 
@@ -813,7 +811,7 @@ def adjust_new_tree_synapses(num_of_subtrees, roots_of_subtrees,
     # mapping (non-somatic) synapses to their new location on the reduced model
     # (the new location is the exact location of the middle of the segment they
     # were mapped to, in order to enable merging)
-    print('trunk_sec_type_list_indices:',trunk_sec_type_list_indices)
+#     print('trunk_sec_type_list_indices:',trunk_sec_type_list_indices)
     for section_to_expand_index in range(len(sections_to_expand)):
         imp_obj, subtree_input_impedance = measure_input_impedance_of_subtree(
             sections_to_expand[section_to_expand_index], reduction_frequency)
@@ -921,9 +919,9 @@ def create_seg_to_seg(original_cell,
     subtree_index=0
     for sec in sections_to_expand:
             for seg in sec:
-                print('expanded_seg_to_original_seg:',expanded_seg_to_original_seg)
-                print('original_seg_to_expanded_seg:',original_seg_to_expanded_seg)
-                print(seg)
+#                 print('expanded_seg_to_original_seg:',expanded_seg_to_original_seg)
+#                 print('original_seg_to_expanded_seg:',original_seg_to_expanded_seg)
+#                 print(seg)
                 synapse_location = find_synapse_loc(seg, mapping_sections_to_subtree_index)
                 imp_obj, cable_input_impedance = measure_input_impedance_of_subtree(
                     sec, reduction_frequency)
@@ -939,12 +937,12 @@ def create_seg_to_seg(original_cell,
                     cable_input_impedance,
                     all_trunk_properties[subtree_index], all_branch_properties[subtree_index],furcations_x[subtree_index],
                     subtree_ind_to_q[subtree_index])
-                print('|mid_of_segment_loc:',mid_of_segment_loc,'|on_trunk',on_trunk,'|seg:',seg)
+#                 print('|mid_of_segment_loc:',mid_of_segment_loc,'|on_trunk',on_trunk,'|seg:',seg)
                 if on_trunk:
                   new_section_for_synapse = trunks[subtree_index] # returns trunk section
                 else:
                   new_section_for_synapse = branches[subtree_index] # returns list of branch sections for each trunk
-                print('new_section_for_synapse:',new_section_for_synapse)
+#                 print('new_section_for_synapse:',new_section_for_synapse)
                 if on_trunk == False: # case for mapping to branches
                   expanded_seg = [None] * len(new_section_for_synapse) #initial array for branches
                   for i in range(len(new_section_for_synapse)):
@@ -990,7 +988,7 @@ def copy_dendritic_mech(original_seg_to_reduced_seg,
         vals_per_mech_per_segment[reduced_seg] = collections.defaultdict(list)
 
         for original_seg in original_segs:
-            print('original_seg: ',original_seg)
+#             print('original_seg: ',original_seg)
             # print('segment_to_mech_vals[original_seg].items(): ',segment_to_mech_vals[original_seg].items())
             for mech_name, mech_params in segment_to_mech_vals[original_seg].items():
                 for param_name, param_value in mech_params.items():
@@ -1007,8 +1005,8 @@ def copy_dendritic_mech(original_seg_to_reduced_seg,
         for seg in sec:
             all_segments.append(seg)
     
-    print('all expanded segments:',all_segments)
-    print('reduced_seg_to_original_seg: ',reduced_seg_to_original_seg)
+#     print('all expanded segments:',all_segments)
+#     print('reduced_seg_to_original_seg: ',reduced_seg_to_original_seg)
     if len(all_segments) != len(reduced_seg_to_original_seg):
         logger.warning('There is no segment to segment copy, it means that some segments in the'
                     'reduced model did not receive channels from the original cell.'
