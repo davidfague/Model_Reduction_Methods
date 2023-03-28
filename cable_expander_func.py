@@ -10,6 +10,7 @@ from decimal import Decimal
 import numpy as np
 import neuron
 from neuron import h
+from neuron_reduce import load_model
 h.load_file("stdrun.hoc")
 
 
