@@ -10,7 +10,7 @@ from decimal import Decimal
 import numpy as np
 import neuron
 from neuron import h
-from neuron_reduce.subtree_reductor_func import load_model, gather_subtrees, mark_subtree_sections_with_subtree_index
+from neuron_reduce.subtree_reductor_func import load_model, gather_subtrees, mark_subtree_sections_with_subtree_index, create_segments_to_mech_vals
 h.load_file("stdrun.hoc")
 
 
