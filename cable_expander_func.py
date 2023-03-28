@@ -13,7 +13,8 @@ from neuron import h
 from neuron_reduce.subtree_reductor_func import (load_model, gather_subtrees, mark_subtree_sections_with_subtree_index, create_segments_to_mech_vals, 
                                                  calculate_nsegs_from_lambda, create_sections_in_hoc, append_to_section_lists, calculate_subtree_q,
                                                  Neuron)
-from neuron_reduce.reducing_methods import _get_subtree_biophysical_properties, measure_input_impedance_of_subtree, find_lowest_subtree_impedance, find_space_const_in_cm, push_section
+from neuron_reduce.reducing_methods import (_get_subtree_biophysical_properties, measure_input_impedance_of_subtree, find_lowest_subtree_impedance, 
+                                            find_space_const_in_cm, push_section, find_best_real_X)
 # can replace Neuron class import with another python cell class
 
 h.load_file("stdrun.hoc")
