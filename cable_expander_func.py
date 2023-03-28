@@ -22,7 +22,7 @@ CableParams = collections.namedtuple('CableParams',
 SynapseLocation = collections.namedtuple('SynapseLocation', 'subtree_index, section_num, x, section_type')
 
 def cable_expander(original_cell,
-                     sections_to_expand_list, 
+                     sections_to_expand, 
                      furcations_x, 
                      nbranches,
                      synapses_list,
