@@ -11,7 +11,7 @@ import numpy as np
 import neuron
 from neuron import h
 from neuron_reduce.subtree_reductor_func import load_model, gather_subtrees, mark_subtree_sections_with_subtree_index, create_segments_to_mech_vals
-from neuron_reduce.reducing_methods import _get_subtree_biophysical_properties
+from neuron_reduce.reducing_methods import _get_subtree_biophysical_properties, measure_input_impedance_of_subtree
 h.load_file("stdrun.hoc")
 
 
