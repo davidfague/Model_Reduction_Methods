@@ -113,13 +113,14 @@ def cable_expander(original_cell,
 
     soma_ref = h.SectionRef(sec=soma)
     sections_to_keep, is_section_to_keep_soma_parent, soma_sections_to_keep_x = find_and_disconnect_sections_to_keep(soma_ref,sections_to_expand)
-#     print('sections_to_keep: ',sections_to_keep)
+    print('sections_to_keep: ',sections_to_keep)
 #     print('sections_to_expand: ',sections_to_expand)
     roots_of_subtrees, num_of_subtrees = gather_subtrees(soma_ref)
 # # ************************************stopping point today*********************************
 #     print('disconnected kept sections')
     sections_to_delete, section_per_subtree_index, mapping_sections_to_subtree_index = \
         gather_cell_subtrees(sections_to_expand)
+    print('sections_to_delete: ',sections_to_delete)
     
 
     # preparing for expansion
