@@ -87,7 +87,9 @@ def cable_expander(original_cell,
     
 #     print('model loaded')
     # finds soma properties
-    soma = original_cell.soma[0] if original_cell.soma.hname()[-1] == ']' else original_cell.soma
+#     soma = original_cell.soma[0] if original_cell.soma.hname()[-1] == ']' else original_cell.soma
+    try: soma = original_cell.soma[0] if original_cell.soma.hname()[-1] == ']' else original_cell.soma
+    except: soma=original_cell.soma
 #     print('soma found')
 #     print(soma.cm)
     
