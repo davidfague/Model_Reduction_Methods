@@ -22,6 +22,10 @@ CableParams = collections.namedtuple('CableParams',
 
 SynapseLocation = collections.namedtuple('SynapseLocation', 'subtree_index, section_num, x, section_type')
 
+logger = logging.getLogger(__name__)
+SOMA_LABEL = "soma"
+EXCLUDE_MECHANISMS = ('pas', 'na_ion', 'k_ion', 'ca_ion', 'h_ion', 'ttx_ion', )
+
 def cable_expander(original_cell,
                      sections_to_expand, 
                      furcations_x, 
