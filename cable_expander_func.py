@@ -411,7 +411,8 @@ def create_dendritic_cell(soma_cable,
 
     create_sections_in_hoc("soma", 1, "reduced_dendritic_cell")
 
-    soma = original_cell.soma[0] if original_cell.soma.hname()[-1] == ']' else original_cell.soma
+    try: soma = original_cell.soma[0] if original_cell.soma.hname()[-1] == ']' else original_cell.soma
+    except: soma = original_cell.soma
     append_to_section_lists("soma[0]", "somatic", "reduced_dendritic_cell")
     sec_type_list=[]
     trunk_sec_type_list = []
