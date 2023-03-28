@@ -327,7 +327,7 @@ def expand_cable(section_to_expand, frequency, furcation_x, nbranch):
 
     section_to_expand_ref = h.SectionRef(sec=section_to_expand)
     sec_type=section_to_expand.name().split(".")[1][:4] #get section type
-    cm, rm, ra, e_pas, q = _get_subtree_biophysical_properties(section_to_expand, frequency)
+    cm, rm, ra, e_pas, q = _get_subtree_biophysical_properties(section_to_expand_ref, frequency)
 
     # finds the subtree's input impedance (at the somatic-proximal end of the
     # subtree root section) and the lowest transfer impedance in the subtree in
