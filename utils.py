@@ -286,13 +286,15 @@ def make_reduced_seg_df(cell,savename="Segments.csv"):
     active_elec_distances = []
     passive = h.Impedance()
     try:passive.loc(cell.hobj.soma[0](0.5))
-    except: try: passive.loc(cell.soma[0](0.5))
-            except: passive.loc(cell.soma(0.5))
+    except: 
+      try: passive.loc(cell.soma[0](0.5))
+      except: passive.loc(cell.soma(0.5))
     passive.compute(frequency + 1 / 9e9, 0)
     active = h.Impedance()
     try:active.loc(cell.hobj.soma[0](0.5))
-    except: try: active.loc(cell.soma[0](0.5))
-            except: active.loc(cell.soma(0.5))
+    except: 
+      try: active.loc(cell.soma[0](0.5))
+      except: active.loc(cell.soma(0.5))
     active.compute(frequency + 1 / 9e9, 1)
 #############################################################
     
