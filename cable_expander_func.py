@@ -114,7 +114,7 @@ def cable_expander(original_cell,
 #     print('has_apical:', has_apical)
 
     soma_ref = h.SectionRef(sec=soma)
-    sections_to_keep, is_section_to_keep_soma_parent, soma_sections_to_keep_x = find_and_disconnect_sections_to_keep(soma_ref,sections_to_expand)
+    sections_to_keep, is_section_to_keep_soma_parent, soma_sections_to_keep_x = find_and_disconnect_sections_to_keep(soma,sections_to_expand)
     print('sections_to_keep: ',sections_to_keep)
 #     print('sections_to_expand: ',sections_to_expand)
     roots_of_subtrees, num_of_subtrees = gather_subtrees(soma_ref)
@@ -563,15 +563,15 @@ def create_dendritic_cell(soma_cable,
     # cell.apic = apic
     return cell, basals, apicals, trunk_sec_type_list_indices, trunks, branches, all_expanded_sections, number_of_sections_in_apical_list,number_of_sections_in_basal_list, number_of_sections_in_axonal_list
 
-def find_and_disconnect_sections_to_keep(soma_ref,sections_to_expand):
+def find_and_disconnect_sections_to_keep(soma,sections_to_expand):
     '''Searching for sections to keep, they can be a child of the soma or a parent of the soma.'''
     sections_to_keep, is_section_to_keep_soma_parent, soma_sections_to_keep_x  = [], [], []
     pdb.set_trace()
-    for sec in soma_ref.child:
+    for sec in soma.children():
 #         print('original_sec:',sec)
         # name = sec.hname().lower()
         if sec not in sections_to_expand:
-            print('keep this section')
+#             print('keep this section')
             sections_to_keep.append(sec)
             is_section_to_keep_soma_parent.append(False)
             # disconnect section
