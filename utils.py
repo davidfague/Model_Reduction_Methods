@@ -579,3 +579,16 @@ def check_connectivity(cell):
             print(sec,'children',sec.children())
         else:
             print(sec)
+            
+def createsegtracereport(reportname=str,dataname):
+  try:
+    os.remove(reportname)
+    #print('replacing ',reportname)
+  except:
+    pass
+    #print('creating ',reportname)
+    
+
+  f = h5py.File(reportname,'w')
+  v = f.create_dataset("report/biophysical/data", data = dataname)
+  f.close()
