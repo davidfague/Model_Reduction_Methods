@@ -1,3 +1,5 @@
+import pdb
+
 
 import collections
 import itertools as it
@@ -100,7 +102,6 @@ def cable_expander(original_cell,
 #     soma = original_cell.soma[0] if original_cell.soma.hname()[-1] == ']' else original_cell.soma
     try: soma = original_cell.soma[0] if original_cell.soma.hname()[-1] == ']' else original_cell.soma
     except: soma=original_cell.soma
-    import pdb; pdb.set_trace()
 #     print('soma found')
 #     print(soma.cm)
     
@@ -565,6 +566,7 @@ def create_dendritic_cell(soma_cable,
 def find_and_disconnect_sections_to_keep(soma_ref,sections_to_expand):
     '''Searching for sections to keep, they can be a child of the soma or a parent of the soma.'''
     sections_to_keep, is_section_to_keep_soma_parent, soma_sections_to_keep_x  = [], [], []
+    pdb.set_trace()
     for sec in soma_ref.child:
 #         print('original_sec:',sec)
         # name = sec.hname().lower()
