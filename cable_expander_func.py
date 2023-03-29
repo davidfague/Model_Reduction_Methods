@@ -100,6 +100,7 @@ def cable_expander(original_cell,
 #     soma = original_cell.soma[0] if original_cell.soma.hname()[-1] == ']' else original_cell.soma
     try: soma = original_cell.soma[0] if original_cell.soma.hname()[-1] == ']' else original_cell.soma
     except: soma=original_cell.soma
+    import pdb; pdb.set_trace()
 #     print('soma found')
 #     print(soma.cm)
     
