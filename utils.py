@@ -3,6 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from neuron import h,gui
 import numpy as np
+import h5py
+import os
 
 def generate_stylized_geometry(cell,savename):
   df = pd.DataFrame()
