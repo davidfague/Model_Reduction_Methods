@@ -536,3 +536,33 @@ def plot_morphology(exc_syns,savename):
   plt.scatter(exc_syns[(exc_syns.Type=='soma')&(exc_syns['Sec ID']==0)]['Coord X'],
           exc_syns[(exc_syns.Type=='soma')&(exc_syns['Sec ID']==0)]['Coord Y'],color='k',s=100)
   plt.savefig(savename)
+
+  
+  def check_connectivity(cell):
+    '''
+    prints the sections within the given cell object's section lists and each section's children sections
+    '''
+    print('SOMA')
+    for sec in [cell.soma]:
+        if sec.children() != []:
+            print(sec,'children',sec.children())
+        else:
+            print(sec)
+    print('APICAL')
+    for sec in cell.apic:
+        if sec.children() != []:
+            print(sec,'children',sec.children())
+        else:
+            print(sec)
+    print('BASAL')
+    for sec in cell.dend:
+        if sec.children() != []:
+            print(sec,'children',sec.children())
+        else:
+            print(sec)
+    print('AXONAL')
+    for sec in cell.axon:
+        if sec.children() != []:
+            print(sec,'children',sec.children())
+        else:
+            print(sec)
