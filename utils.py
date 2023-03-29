@@ -490,12 +490,20 @@ def generate_reduced_cell_seg_coords(cell):
   takes a cell that has no n3d() coordinates and gives new coordinates
   by choosing an arbitrary direction for the subtree to move
   '''
-
-  try: section_obj_list=cell.hoc_model.all
-  except: section_obj_list=cell.all
+  parent_sections=[] #list for already seen parent_sections
+  try: section_obj_list=cell.all
+  except: section_obj_list=cell.hoc_model.all
   axial=False
   for sec in section_obj_list:
-      rot = 2 * math.pi/1 #one branch
+      psec=sec.parentseg().sec
+      if psec is not None:
+        parent_sections.append(psec)
+      if psec==cell.soma:
+        nbranch=1
+      else:
+        nbranch = len(psec.children())
+      rot = 2 * math.pi/nbranch #one branch
+      i=parent_sections.count(psec)
       length=sec.L
       diameter=sec.diam
       fullsecname = sec.name()
@@ -513,7 +521,6 @@ def generate_reduced_cell_seg_coords(cell):
         x = length * math.cos(ang)
         y = length * math.sin(ang)
       #find starting position
-      psec=sec.parentseg().sec
       pt0 = [psec.x3d(1), psec.y3d(1), psec.z3d(1)]
       pt1 = [0., 0., 0.]
       pt1[1] = pt0[1] + y
