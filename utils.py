@@ -498,7 +498,7 @@ def generate_reduced_cell_seg_coords(cell):
   print(section_obj_list)
   axial=False
   for sec in section_obj_list:
-    if sec.n3d() is not None:
+    if sec.n3d() !=0 :
       if sec.parentseg() is not None:
         psec=sec.parentseg().sec
         parent_sections.append(psec)
