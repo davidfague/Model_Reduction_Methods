@@ -538,7 +538,7 @@ def plot_morphology(exc_syns,savename):
   plt.savefig(savename)
 
   
-  def check_connectivity(cell):
+def check_connectivity(cell):
     '''
     prints the sections within the given cell object's section lists and each section's children sections
     '''
