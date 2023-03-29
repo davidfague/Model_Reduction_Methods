@@ -566,6 +566,7 @@ def create_dendritic_cell(soma_cable,
 def find_and_disconnect_sections_to_keep(soma,sections_to_expand):
     '''Searching for sections to keep, they can be a child of the soma or a parent of the soma.'''
     sections_to_keep, is_section_to_keep_soma_parent, soma_sections_to_keep_x  = [], [], []
+    soma_ref = h.SectionRef(sec=soma)
     for sec in soma.children():
 #         print('original_sec:',sec)
         # name = sec.hname().lower()
