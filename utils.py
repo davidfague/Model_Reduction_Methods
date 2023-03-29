@@ -493,41 +493,43 @@ def generate_reduced_cell_seg_coords(cell):
   parent_sections=[] #list for already seen parent_sections
   try: section_obj_list=cell.all
   except: section_obj_list=cell.hoc_model.all
+  print(section_obj_list)
   axial=False
   for sec in section_obj_list:
-      psec=sec.parentseg().sec
-      if psec is not None:
+    if sec.n3d() is not None:
+      if sec.parentseg() is not None:
+        psec=sec.parentseg().sec
         parent_sections.append(psec)
-      if psec==cell.soma:
-        nbranch=1
-      else:
-        nbranch = len(psec.children())
-      rot = 2 * math.pi/nbranch #one branch
-      i=parent_sections.count(psec)
-      length=sec.L
-      diameter=sec.diam
-      fullsecname = sec.name()
-      sec_type = fullsecname.split(".")[1][:4]
-      if sec_type == "apic":
-        ang=np.random.normal(scale=0.1,loc=1.570796327)
-      elif sec_type=="dend":
-        ang=-np.random.uniform(low=0,high=np.pi)
-      else:
-        ang=0
-      if axial == True:
-        x = 0
-        y = length*((ang>=0)*2-1)
-      else:
-        x = length * math.cos(ang)
-        y = length * math.sin(ang)
-      #find starting position
-      pt0 = [psec.x3d(1), psec.y3d(1), psec.z3d(1)]
-      pt1 = [0., 0., 0.]
-      pt1[1] = pt0[1] + y
-      pt1[0] = pt0[0] + x * math.cos(i * rot)
-      pt1[2] = pt0[2] + x * math.sin(i * rot)
-      sec.pt3dadd(*pt0, sec.diam)
-      sec.pt3dadd(*pt1, sec.diam)
+        if psec==cell.soma:
+          nbranch=1
+        else:
+          nbranch = len(psec.children())
+        rot = 2 * math.pi/nbranch #one branch
+        i=parent_sections.count(psec)
+        length=sec.L
+        diameter=sec.diam
+        fullsecname = sec.name()
+        sec_type = fullsecname.split(".")[1][:4]
+        if sec_type == "apic":
+          ang=np.random.normal(scale=0.1,loc=1.570796327)
+        elif sec_type=="dend":
+          ang=-np.random.uniform(low=0,high=np.pi)
+        else:
+          ang=0
+        if axial == True:
+          x = 0
+          y = length*((ang>=0)*2-1)
+        else:
+          x = length * math.cos(ang)
+          y = length * math.sin(ang)
+        #find starting position
+        pt0 = [psec.x3d(1), psec.y3d(1), psec.z3d(1)]
+        pt1 = [0., 0., 0.]
+        pt1[1] = pt0[1] + y
+        pt1[0] = pt0[0] + x * math.cos(i * rot)
+        pt1[2] = pt0[2] + x * math.sin(i * rot)
+        sec.pt3dadd(*pt0, sec.diam)
+        sec.pt3dadd(*pt1, sec.diam)
 
 def plot_morphology(exc_syns,savename):
   plt.figure(figsize=(4,10))
