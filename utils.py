@@ -316,8 +316,8 @@ def make_reduced_seg_df(cell,savename="Segments.csv"):
 #      psegid=segments.index(psec((i + .5) / nseg))
 #      psegids.append(psegid)
 ################################################################
-    try: section_obj_list=cell.hoc_model.all
-    except: section_obj_list=cell.all
+    try: section_obj_list=cell.all
+    except: section_obj_list=cell.hoc_model.all
     for sec in section_obj_list:
         xCoords,yCoords,zCoords=returnSegmentValues(sec) # get 3d coordinates for this section
         for i,seg in enumerate(sec):
