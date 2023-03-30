@@ -92,18 +92,14 @@ def cable_expander(original_cell,
 
     if PP_params_dict is None:
         PP_params_dict = {}
-#     print('init')
     h.init()
     
     model_obj_name = load_model(model_filename)
     
-#     print('model loaded')
     # finds soma properties
 #     soma = original_cell.soma[0] if original_cell.soma.hname()[-1] == ']' else original_cell.soma
     try: soma = original_cell.soma[0] if original_cell.soma.hname()[-1] == ']' else original_cell.soma
     except: soma=original_cell.soma
-#     print('soma found')
-#     print(soma.cm)
     
 
     soma_cable = CableParams(length=soma.L, diam=soma.diam, space_const=None,
@@ -115,14 +111,14 @@ def cable_expander(original_cell,
 
     soma_ref = h.SectionRef(sec=soma)
     sections_to_keep, is_section_to_keep_soma_parent, soma_sections_to_keep_x = find_and_disconnect_sections_to_keep(soma,sections_to_expand)
-    print('sections_to_keep: ',sections_to_keep)
+#     print('sections_to_keep: ',sections_to_keep)
 #     print('sections_to_expand: ',sections_to_expand)
     roots_of_subtrees, num_of_subtrees = gather_subtrees(soma_ref)
 # # ************************************stopping point today*********************************
 #     print('disconnected kept sections')
     sections_to_delete, section_per_subtree_index, mapping_sections_to_subtree_index = \
         gather_cell_subtrees(sections_to_expand)
-    print('sections_to_delete: ',sections_to_delete)
+#     print('sections_to_delete: ',sections_to_delete)
     
 
     # preparing for expansion
@@ -974,7 +970,7 @@ def create_seg_to_seg(original_cell,
                       # print('expanded_seg_to_original_seg: ',expanded_seg_to_original_seg)
                 else: #normal case
                   expanded_seg = new_section_for_synapse(mid_of_segment_loc)
-                  print('expanded_seg: ',expanded_seg)
+#                   print('expanded_seg: ',expanded_seg)
                   # original_seg_to_expanded_seg[seg] = expanded_seg
                   original_seg_to_expanded_seg[seg].append(expanded_seg) 
                   # print('original_seg_to_expanded_seg: ',original_seg_to_expanded_seg)
