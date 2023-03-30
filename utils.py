@@ -582,7 +582,7 @@ def check_connectivity(cell):
         else:
             print(sec)
             
-def create_seg_var_report(reportname=str,dataname):
+def create_seg_var_report(reportname,dataname):
   try:
     os.remove(reportname)
     #print('replacing ',reportname)
