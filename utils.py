@@ -185,11 +185,11 @@ def make_seg_df(cell,savename="Segments.csv"):
     try: section_obj_list=cell.hobj.all
     except: section_obj_list=cell.all
     for sec in section_obj_list:
-        xCoords,yCoords,zCoords=returnSegmentValues(sec) # get 3d coordinates for this section
+#         xCoords,yCoords,zCoords=returnSegmentValues(sec) # get 3d coordinates for this section #may not be accurate
         for i,seg in enumerate(sec):
-            all_seg_x_coords.append(xCoords[i])
-            all_seg_y_coords.append(yCoords[i])
-            all_seg_z_coords.append(zCoords[i])
+            all_seg_x_coords.append(cell.seg_coords['pc'][j][0])
+            all_seg_y_coords.append(cell.seg_coords['pc'][j][1])
+            all_seg_z_coords.append(cell.seg_coords['pc'][j][2])
             lens.append(seg.sec.L)
             seg_lens.append(seg.sec.L/seg.sec.nseg)
             diams.append(seg.sec.diam)
