@@ -191,7 +191,7 @@ def make_seg_df(cell,savename="Segments.csv"):
               all_seg_x_coords.append(cell.seg_coords['pc'][j][0])
               all_seg_y_coords.append(cell.seg_coords['pc'][j][1])
               all_seg_z_coords.append(cell.seg_coords['pc'][j][2])
-             except:
+            except:
               print('Exception made. Calculating Seg Coords')
               all_seg_x_coords.append(zCoords[i])
               all_seg_y_coords.append(yCoords[i])
