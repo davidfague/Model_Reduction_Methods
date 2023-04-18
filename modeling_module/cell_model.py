@@ -1,5 +1,6 @@
 from neuron import h
 from typing import Optional, Union, List
+import numpy as np
 import math
 class cell_model():
   '''expanded cell model class for ECP calculation
