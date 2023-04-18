@@ -37,10 +37,11 @@ class PointCurrent(ABC):
         return self.cell.sec_id_in_seg[self.sec_index] + iseg
 class CurrentInjection(PointCurrent):
     """A module for current injection
+    was current: Optional[np.ndarray, List[int]] = None,
     """
 
     def __init__(self, cell, sec_index: int, loc: float = 0.5,
-                 pulse: bool = True, current: Optional[np.ndarray, List[int]] = None,
+                 pulse: bool = True, current: Optional[np.ndarray] = None,
                  dt: Optional[np.ndarray] = None, record: bool = False, **pulse_param: Any) -> None:
         """
         cell: target cell object
