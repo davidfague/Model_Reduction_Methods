@@ -39,7 +39,7 @@ class CurrentInjection(PointCurrent):
     """A module for current injection"""
 
     def __init__(self, cell, sec_index: int, loc: float = 0.5,
-                 pulse: bool = True, current: Optional[np.ndarray, List[int]] = None,
+                 pulse: bool = True, current: Optional[np.ndarray] = None,  # was current: Optional[np.ndarray, List[int]] = None,
                  dt: Optional[np.ndarray] = None, record: bool = False, **pulse_param: Any) -> None:
         """
         cell: target cell object
