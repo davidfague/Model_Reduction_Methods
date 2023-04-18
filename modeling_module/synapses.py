@@ -1,6 +1,6 @@
 from neuron import h
 from abc import ABC, abstractmethod
-from typing import Optional, Union, List
+from typing import List, Optional, Any, TYPE_CHECKING
 import numpy as np
 class PointCurrent(ABC):
     """A module for current point process"""
@@ -37,10 +37,10 @@ class PointCurrent(ABC):
         return self.cell.sec_id_in_seg[self.sec_index] + iseg
 class CurrentInjection(PointCurrent):
     """A module for current injection
-    was current: Optional[np.ndarray, List[int]] = None,"""
+    """
 
     def __init__(self, cell, sec_index: int, loc: float = 0.5,
-                 pulse: bool = True, current: Optional[np.ndarray] = None,
+                 pulse: bool = True, current: Optional[np.ndarray, List[int]] = None,
                  dt: Optional[np.ndarray] = None, record: bool = False, **pulse_param: Any) -> None:
         """
         cell: target cell object
