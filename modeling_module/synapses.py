@@ -1,3 +1,4 @@
+from neuron import h
 from abc import ABC, abstractmethod
 class PointCurrent(ABC):
     """A module for current point process"""
