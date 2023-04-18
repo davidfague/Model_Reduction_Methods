@@ -1,5 +1,4 @@
-from typing import Optional, Union, List
-import math
+from neuron import h
 from typing import Optional, Union, List
 import math
 class cell_model():
