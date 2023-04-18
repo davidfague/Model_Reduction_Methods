@@ -267,7 +267,7 @@ class cell_model():
         temp_list.append(None)
         print("Warning: potentially deleted synapse:","|NetCon obj:",netcon,"|Synapse obj:",syn,"the NetCon's synapse is not in synapses_list. Check corresponding original cell's NetCon for location, etc.")
     # now use temp list to assign each synapse its netcons
-    for synapse in synapses_list:
+    for synapse in self.synapses_list:
       synapse_netcons=[]
       if synapse in temp_list:
         num_netcons=temp_list.count(synapse)
