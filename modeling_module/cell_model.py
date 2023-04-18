@@ -1,6 +1,6 @@
 from neuron import h
 from typing import Optional, Union, List
-from synapses import CurrentInjection, Synapse, Listed_Synapse
+from modeling_module.synapses import CurrentInjection, Synapse, Listed_Synapse
 import numpy as np
 import pandas as pd
 import math
