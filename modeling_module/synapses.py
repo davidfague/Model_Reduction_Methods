@@ -68,11 +68,13 @@ class CurrentInjection(PointCurrent):
             self.setup_recorder()
 
     def setup_pulse(self, **pulse_param: Any) -> None:
-        """Set IClamp attributes. Argument keyword: attribute name, arugment value: attribute value"""
+        """Set IClamp attributes. Argument keyword: attribute name, arugment value: attribute value
+        was current: Optional[np.ndarray, List[int]]
+        """
         for param, value in pulse_param.items():
             setattr(self.pp_obj, param, value)
 
-    def setup_current(self, current: Optional[np.ndarray, List[int]], dt: Optional[np.ndarray]) -> None:
+    def setup_current(self, current: Optional[np.ndarray], dt: Optional[np.ndarray]) -> None:
         """Set current injection with the waveform in vector 'current'"""
         ccl = self.pp_obj
         ccl.dur = 0
