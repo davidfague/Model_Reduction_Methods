@@ -1070,8 +1070,8 @@ def duplicate_synapse(synapse):
         raise ValueError(f"Unsupported synapse type: {syn_type}")
     
     for pp in seg.point_processes():
-        print(pp,pp.hname(),pp.get_loc())
-        print(synapse,synapse.hname(),synapse.get_loc())
+        #print(pp,pp.hname(),pp.get_loc())
+        #print(synapse,synapse.hname(),synapse.get_loc())
         if pp.hname() == synapse.hname() and pp.get_loc() == synapse.get_loc():
             new_synapse = synapse_types[syn_type](seg, pp.get_loc())
             # extract the parameters using hoc instead of PyNeuronToolbox
