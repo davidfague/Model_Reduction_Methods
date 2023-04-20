@@ -1062,7 +1062,9 @@ def distribute_branch_synapses(branches,netcons_list):
         
 def duplicate_synapse(synapse):
     # Create a new synapse object with the same type and location as the original synapse
-    new_synapse = getattr(h, synapse.hname())(synapse.get_segment(), synapse.get_loc())
+    synapse_str = f"{synapse.hname()}({synapse.get_segment()}({synapse.get_loc()}))"
+    new_synapse = h.eval(synapse_str)
+#     new_synapse = getattr(h, synapse.hname())(synapse.get_segment(), synapse.get_loc())
 
     # Copy the attributes of the original synapse to the new synapse
     for attr in dir(synapse):
