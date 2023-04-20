@@ -1051,14 +1051,15 @@ def distribute_branch_synapses(branches,netcons_list):
           new_syns.append(new_syn)
           x=synapse.get_loc()
           new_syn.loc(branch_set[i+1](x))
-          for netcon in netcons_list: #have to inefficiently iterate through netcons list
-            syn=netcon.syn()
-            print(syn,synapse)
-            if syn==synapse:
-              rand_index=int(np.random.uniform(0,len(branch_set)))#choose random branch synapse to move point netcon to
-              new_synapse=new_syns[rand_index] #adjust netcon to new synapse
-              print(synapse,' netcon',netcon,' moved to',new_synapse,' on sec',new_synapse.seg.sec)
-              netcon.setpost(new_synapse)
+        for netcon in netcons_list: #have to inefficiently iterate through netcons list
+          syn=netcon.syn()
+          print(syn,synapse)
+          if syn==synapse:
+            rand_index=int(np.random.uniform(0,len(branch_set)))#choose random branch synapse to move point netcon to
+            print(rand_index)
+            new_synapse=new_syns[rand_index] #adjust netcon to new synapse
+            print(synapse,' netcon',netcon,' moved to',new_synapse,' on sec',new_synapse.seg.sec)
+            netcon.setpost(new_synapse)
  
 def duplicate_synapse(synapse):
     """Creates a duplicate synapse object with the same attributes as the given synapse object"""
