@@ -9,7 +9,7 @@ from decimal import Decimal
 
 import numpy as np
 import neuron
-from neuron import h, Exp2Syn
+from neuron import h
 from neuron_reduce.subtree_reductor_func import (load_model, gather_subtrees, mark_subtree_sections_with_subtree_index, create_segments_to_mech_vals, 
                                                  calculate_nsegs_from_lambda, create_sections_in_hoc, append_to_section_lists, calculate_subtree_q,
                                                  type_of_point_process,add_PP_properties_to_dict,synapse_properties_match,textify_seg_to_seg,
@@ -1062,7 +1062,7 @@ def duplicate_synapse(synapse):
     seg = synapse.get_segment()
     syn_type = synapse.hname()
     synapse_types = {
-        'Exp2Syn': neuron.Exp2Syn
+        'Exp2Syn': neuron.h.Exp2Syn
 
     }
     
