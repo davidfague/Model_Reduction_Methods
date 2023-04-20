@@ -1065,12 +1065,9 @@ def duplicate_synapse(syn1):
     
     # Create dictionary mapping synapse types to constructors
     synapse_types = {}
-    for syn_type in dir(neuron):
-        if syn_type.endswith('Syn'):
-            try:
-                synapse_types[syn_type] = getattr(nrn, syn_type)
-            except AttributeError:
-                pass
+    for syn_type in dir(nrn):
+        if "Syn" in syn_type:
+            synapse_types[syn_type] = getattr(nrn, syn_type)
     
     # Get name of synapse type
     syn_type = syn1.hname()
@@ -1081,9 +1078,13 @@ def duplicate_synapse(syn1):
         new_synapse = synapse_types[syn_type](loc, sec=seg.sec)
         
         # Set parameters of new synapse to match the original synapse
-        for param_name in ['tau1', 'tau2', 'e', 'gmax']:
-            param_value = syn1.get(param_name)
-            new_synapse.set(param_name, param_value)
+        for param_name in dir(syn1):
+            if not callable(getattr(syn1, param_name)) and not param_name.startswith('__'):
+                param_value = syn1.get(param_name)
+                try:
+                    new_synapse.set(param_name, param_value)
+                except:
+                    pass
         
         return new_synapse
     
