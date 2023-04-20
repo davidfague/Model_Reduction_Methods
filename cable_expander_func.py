@@ -1050,7 +1050,7 @@ def distribute_branch_synapses(branches,netcons_list):
           new_syn=duplicate_synapse(synapse)
           new_syns.append(new_syn)
           x=synapse.get_loc()
-          new_syn.loc(x=x,sec=branch_set[i+1])
+          new_syn.loc(branch_set[i+1](x))
           for netcon in netcons_list: #have to inefficiently iterate through netcons list
             syn=netcon.syn()
             print(syn,synapse)
