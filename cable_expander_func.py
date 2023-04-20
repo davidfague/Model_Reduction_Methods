@@ -197,7 +197,7 @@ def cable_expander(original_cell,
         cell,
         reduction_frequency)
 
-    distribute_branch_synapses(branches,netcons_list) #adjust synapses
+    distribute_branch_synapses(branches,netcons_list,new_synapses_list) #adjust synapses
     
     # create segment to segment mapping
     original_seg_to_reduced_seg, reduced_seg_to_original_seg, = create_seg_to_seg(
@@ -1033,7 +1033,7 @@ def copy_dendritic_mech(original_seg_to_reduced_seg,
                                mech_names_per_segment)
         
         
-def distribute_branch_synapses(branches,netcons_list):
+def distribute_branch_synapses(branches,netcons_list,synapses_list):
   '''duplicates the given branch's synapses to the over branches and randomly distributes the netcon objects pointing at it.'''
   for branch_set in branches:
 #     print(branch_set)
@@ -1049,6 +1049,7 @@ def distribute_branch_synapses(branches,netcons_list):
         # duplicate synapses to new location
           new_syn=duplicate_synapse(synapse)
           new_syns.append(new_syn)
+          synapses_list.append(new_syn)
           x=synapse.get_loc()
           new_syn.loc(branch_set[i+1](x))
         for netcon in netcons_list: #have to inefficiently iterate through netcons list
@@ -1088,42 +1089,3 @@ def duplicate_synapse(synapse):
     new_synapse = seg.point_processes()[synapse_index]
 
     return new_synapse
-
-# def duplicate_synapse(synapse):
-#     # get the properties of the original synapse
-#     seg = synapse.get_segment()
-#     loc = synapse.get_loc()
-#     syn_props = {prop: getattr(synapse, prop) for prop in dir(synapse) if not callable(getattr(synapse, prop)) and not prop.startswith("__")}
-
-#     # create a new synapse object on the same segment
-#     synapses_on_seg = seg.point_processes()
-#     synapse_index = synapses_on_seg.index(synapse)
-#     new_synapse = seg.point_processes()[synapse_index].duplicate(seg)
-
-#     # set the properties of the new synapse object
-#     for prop, value in syn_props.items():
-#         setattr(new_synapse, prop, value)
-
-#     # return the new synapse object
-#     return new_synapse
-
-
-
-# def duplicate_synapse(synapse):
-#     # get the properties of the original synapse
-#     syn_type = synapse.hname()
-#     seg = synapse.get_segment()
-#     loc = synapse.get_loc()
-#     syn_props = {prop: getattr(synapse, prop) for prop in dir(synapse) if not callable(getattr(synapse, prop)) and not prop.startswith("__")}
-
-#     # construct a HOC command to create a new synapse object with the same properties
-#     hoc_cmd = f"{seg}({loc}).{syn_type} = new {syn_type}({seg}({loc}))\n"
-#     for prop, value in syn_props.items():
-#         hoc_cmd += f"{seg}({loc}).{syn_type}.{prop} = {value}\n"
-
-#     # execute the command in HOC
-#     h(hoc_cmd)
-
-#     # return the new synapse object
-#     new_synapse = getattr(getattr(seg, syn_type), "_ref_"+syn_type)
-#     return new_synapse
