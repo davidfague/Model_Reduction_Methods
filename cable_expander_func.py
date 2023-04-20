@@ -1062,10 +1062,8 @@ def duplicate_synapse(synapse):
     seg = synapse.get_segment()
     syn_type = synapse.hname()
     synapse_types = {
-        'ExpSyn': neuron.ExpSyn,
-        'Exp2Syn': neuron.Exp2Syn,
-        'GABAaSyn': neuron.GABAaSyn,
-        'GABAbSyn': neuron.GABAbSyn
+        'Exp2Syn': neuron.Exp2Syn
+
     }
     
     if syn_type not in synapse_types:
