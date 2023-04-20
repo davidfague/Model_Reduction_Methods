@@ -1068,15 +1068,13 @@ def duplicate_synapse(synapse):
     syn_props = {prop: getattr(synapse, prop) for prop in dir(synapse) if not callable(getattr(synapse, prop)) and not prop.startswith("__")}
 
     # construct a HOC command to create a new synapse object with the same properties
-    hoc_cmd = f"objref new_synapse\n"
-    hoc_cmd += f"new_synapse = new {syn_type}({seg}({loc}))\n"
+    hoc_cmd = f"{seg}({loc}).{syn_type} = new {syn_type}({seg}({loc}))\n"
     for prop, value in syn_props.items():
-        hoc_cmd += f"new_synapse.{prop} = {value}\n"
+        hoc_cmd += f"{seg}({loc}).{syn_type}.{prop} = {value}\n"
 
-    # create a HOC interpreter object and execute the command
-    hoc_interpreter = h.hoc_interpreter()
-    hoc_interpreter.execute(hoc_cmd)
+    # execute the command in HOC
+    h(hoc_cmd)
 
     # return the new synapse object
-    new_synapse = hoc_interpreter.getvar("new_synapse")
+    new_synapse = getattr(getattr(seg, syn_type), "_ref_"+syn_type)
     return new_synapse
