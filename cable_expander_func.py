@@ -1065,7 +1065,7 @@ def duplicate_synapse(syn1):
     
     # Create dictionary mapping synapse types to constructors
     synapse_types = {}
-    for syn_type in dir(nrn):
+    for syn_type in dir(neuron):
         if "Syn" in syn_type:
             synapse_types[syn_type] = getattr(neuron, syn_type)
     
