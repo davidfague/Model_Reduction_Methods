@@ -1055,6 +1055,6 @@ def distribute_branch_synapses(branches,netcons_list):
             if syn==synapse:
               rand_index=int(np.random.uniform(0,len(branch_set)))#choose random branch synapse to move point netcon to
               new_synapse=new_syns[rand_index] #adjust netcon to new synapse
-              print(synapse,' netcon',netcon,' moved to',new_synapse,' on sec'new_synapse.seg.sec)
+              print(synapse,' netcon',netcon,' moved to',new_synapse,' on sec',new_synapse.seg.sec)
               netcon.setpost(new_synapse)
         
