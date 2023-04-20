@@ -1045,7 +1045,7 @@ def distribute_branch_synapses(branches,netcons_list):
 #         print(synapse)
         new_syns=[] #list for distributing netcons
         new_syns.append(synapse)
-        for i in range(len(branches)-1):
+        for i in range(len(branch_set)-1):
         # duplicate synapses to new location
           new_syn=synapse.duplicate()
           new_syns.append(new_syn)
