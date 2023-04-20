@@ -1047,12 +1047,10 @@ def distribute_branch_synapses(branches,netcons_list):
           new_syns.append(new_syn)
           x=synapse.get_loc()
           new_syn.loc(x=x,sec=branches[i+1])
-      for synapse in seg.point_processes():
-        # distribute netcons randomly
-        for netcon in netcons_list: #have to inefficiently iterate through netcons list
-          syn=netcon.syn()
-          if syn==synapse:
-            rand_index=int(np.random.uniform(0,len(branch_set)))#choose random branch synapse to move point netcon to
-            new_synapse=new_syns[rand_index] #adjust netcon to new synapse
-            netcon.setpost(new_synapse)
+          for netcon in netcons_list: #have to inefficiently iterate through netcons list
+            syn=netcon.syn()
+            if syn==synapse:
+              rand_index=int(np.random.uniform(0,len(branch_set)))#choose random branch synapse to move point netcon to
+              new_synapse=new_syns[rand_index] #adjust netcon to new synapse
+              netcon.setpost(new_synapse)
         
