@@ -1060,15 +1060,23 @@ def distribute_branch_synapses(branches,netcons_list,synapses_list):
 
 def duplicate_synapse(synapse):
     seg = synapse.get_segment()
-    synapse_index = seg.point_processes().index(synapse)
-    hoc_command = "objref new_synapse\nnew_synapse = new " + synapse.hname() + "(0.5)\n"
-    h(hoc_command)
-    new_synapse = seg.point_processes()[synapse_index + 1]
+    syn_type = synapse.hname()
+    synapse_types = {
+        'ExpSyn': nrn.ExpSyn,
+        'Exp2Syn': nrn.Exp2Syn,
+        'GABAaSyn': nrn.GABAaSyn,
+        'GABAbSyn': nrn.GABAbSyn
+    }
     
-    # Set parameters of new synapse to match the original synapse
-    for param_name in dir(synapse):
-        if not callable(getattr(synapse, param_name)) and not param_name.startswith("__") and hasattr(new_synapse, param_name):
-            param_value = getattr(synapse, param_name)
-            new_synapse.__setattr__(param_name, param_value)
+    if syn_type not in synapse_types:
+        raise ValueError(f"Unsupported synapse type: {syn_type}")
     
-    return new_synapse
+    for pp in seg.point_processes():
+        if pp.hname() == syn_type and pp.get_loc() == synapse.get_loc():
+            new_synapse = synapse_types[syn_type](seg, pp.get_loc())
+            for param_name, param_value in pp.get_param_dict().items():
+                if hasattr(new_synapse, param_name):
+                    setattr(new_synapse, param_name, param_value)
+            return new_synapse
+    
+    raise ValueError(f"No matching synapse found for {synapse.hname()} at location {synapse.get_loc()}")
