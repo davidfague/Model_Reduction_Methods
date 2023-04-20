@@ -1060,7 +1060,7 @@ def distribute_branch_synapses(branches,netcons_list,synapses_list):
 
 def duplicate_synapse(synapse):
     seg = synapse.get_segment()
-    syn_type = synapse.hname()
+    syn_type = synapse.hname().split('[')[0]  # Remove index from syn_type
     synapse_types = {
         'Exp2Syn': neuron.h.Exp2Syn
 
