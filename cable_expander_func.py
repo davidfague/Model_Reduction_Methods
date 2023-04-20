@@ -1072,9 +1072,12 @@ def duplicate_synapse(synapse):
     for pp in seg.point_processes():
         if pp.hname() == synapse.hname() and pp.get_loc() == synapse.get_loc():
             new_synapse = synapse_types[syn_type](seg, pp.get_loc())
-            for param_name, param_value in pp.get_param_dict().items():
-                if hasattr(new_synapse, param_name):
-                    setattr(new_synapse, param_name, param_value)
+            # extract the parameters using hoc instead of PyNeuronToolbox
+            for param_name in dir(pp):
+                if not callable(getattr(pp, param_name)) and not param_name.startswith('__'):
+                    param_value = getattr(pp, param_name)
+                    if hasattr(new_synapse, param_name):
+                        setattr(new_synapse, param_name, param_value)
             return new_synapse
     
     raise ValueError(f"No matching synapse found for {synapse.hname()} at location {synapse.get_loc()}")
