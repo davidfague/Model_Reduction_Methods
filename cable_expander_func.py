@@ -1040,7 +1040,9 @@ def distribute_branch_synapses(branches,netcons_list):
     branch_with_synapses=branch_set[0]
     print('original branch',branch_with_synapses)
     for seg in branch_with_synapses:
+      print(seg)
       for synapse in seg.point_processes():
+        print(synapse)
         new_syns=[] #list for distributing netcons
         new_syns.append(synapse)
         for i in range(len(branches)-1):
