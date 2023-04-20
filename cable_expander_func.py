@@ -1047,7 +1047,7 @@ def distribute_branch_synapses(branches,netcons_list):
         new_syns.append(synapse)
         for i in range(len(branch_set)-1):
         # duplicate synapses to new location
-          new_syn=synapse.duplicate()
+          new_syn=duplicate_synapse(synapse)
           new_syns.append(new_syn)
           x=synapse.get_loc()
           new_syn.loc(x=x,sec=branch_set[i+1])
@@ -1060,3 +1060,13 @@ def distribute_branch_synapses(branches,netcons_list):
               print(synapse,' netcon',netcon,' moved to',new_synapse,' on sec',new_synapse.seg.sec)
               netcon.setpost(new_synapse)
         
+def duplicate_synapse(synapse):
+    # Create a new synapse object with the same type and location as the original synapse
+    new_synapse = getattr(h, synapse.hname())(synapse.get_segment(), synapse.get_loc())
+
+    # Copy the attributes of the original synapse to the new synapse
+    for attr in dir(synapse):
+        if not attr.startswith('__') and not callable(getattr(synapse, attr)):
+            setattr(new_synapse, attr, getattr(synapse, attr))
+
+    return new_synapse
