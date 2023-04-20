@@ -1036,13 +1036,13 @@ def copy_dendritic_mech(original_seg_to_reduced_seg,
 def distribute_branch_synapses(branches,netcons_list):
   '''duplicates the given branch's synapses to the over branches and randomly distributes the netcon objects pointing at it.'''
   for branch_set in branches:
-    print(branch_set)
+#     print(branch_set)
     branch_with_synapses=branch_set[0]
-    print('original branch',branch_with_synapses)
+#     print('original branch',branch_with_synapses)
     for seg in branch_with_synapses:
-      print(seg)
+#       print(seg)
       for synapse in seg.point_processes():
-        print(synapse)
+#         print(synapse)
         new_syns=[] #list for distributing netcons
         new_syns.append(synapse)
         for i in range(len(branches)-1):
