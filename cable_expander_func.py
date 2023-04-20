@@ -1056,34 +1056,65 @@ def distribute_branch_synapses(branches,netcons_list,synapses_list):
           syn=netcon.syn()
           if syn==synapse:
             rand_index=int(np.random.uniform(0,len(branch_set)))#choose random branch synapse to move point netcon to
-            print(rand_index)
+            #print(rand_index)
             new_synapse=new_syns[rand_index] #adjust netcon to new synapse
             netcon.setpost(new_synapse)
  
-def duplicate_synapse(synapse):
-    """Creates a duplicate synapse object with the same attributes as the given synapse object"""
-    seg = synapse.get_segment()
-    synapse_index = int(synapse.get_loc())
+def duplicate_synapse(syn1):
+    # Get segment and location of original synapse
+    seg = syn1.get_segment()
+    loc = syn1.get_loc()
+    
+    # Create dictionary mapping synapse types to constructors
+    synapse_types = {}
+    for syn_type in dir(nrn):
+        if syn_type.endswith('Syn'):
+            try:
+                synapse_types[syn_type] = getattr(nrn, syn_type)
+            except AttributeError:
+                pass
+    
+    # Get name of synapse type
+    syn_type = syn1.hname()
+    
+    # Check if synapse type is in the dictionary
+    if syn_type in synapse_types:
+        # Create new synapse object of the same type
+        new_synapse = synapse_types[syn_type](loc, sec=seg.sec)
+        
+        # Set parameters of new synapse to match the original synapse
+        for param_name in ['tau1', 'tau2', 'e', 'gmax']:
+            param_value = syn1.get(param_name)
+            new_synapse.set(param_name, param_value)
+        
+        return new_synapse
+    
+    else:
+        raise ValueError(f"Unsupported synapse type: {syn_type}")
 
-    # Get the synapse type
-    syn_type = synapse.hname()
+# def duplicate_synapse(synapse):
+#     """Creates a duplicate synapse object with the same attributes as the given synapse object"""
+#     seg = synapse.get_segment()
+#     synapse_index = int(synapse.get_loc())
 
-    # Get the synapse parameters
-    params = {}
-    for key in synapse.__dict__.keys():
-        if key.startswith("_") or key == "hoc_interpreter":
-            continue
-        params[key] = getattr(synapse, key)
+#     # Get the synapse type
+#     syn_type = synapse.hname()
 
-    # Create the new synapse object
-    hoc_command = "objref new_synapse\n"
-    hoc_command += "new_synapse = new " + syn_type + "(0.5)\n"
-    hoc_command += "new_synapse.loc(seg, " + str(synapse_index) + ")\n"
-    for key, value in params.items():
-        hoc_command += "new_synapse." + key + " = " + str(value) + "\n"
-    h(hoc_command)
+#     # Get the synapse parameters
+#     params = {}
+#     for key in synapse.__dict__.keys():
+#         if key.startswith("_") or key == "hoc_interpreter":
+#             continue
+#         params[key] = getattr(synapse, key)
+#     # Create the new synapse object
+#     hoc_command = "objref new_synapse\n"
+#     hoc_command += "new_synapse = new " + syn_type + "(0.5)\n"
+#     hoc_command += "new_synapse.loc(seg, " + str(synapse_index) + ")\n"
+#     for key, value in params.items():
+#         hoc_command += "new_synapse." + key + " = " + str(value) + "\n"
+#     h(hoc_command)
 
-    # Get the new synapse object
-    new_synapse = seg.point_processes()[synapse_index]
+#     # Get the new synapse object
+#     new_synapse = seg.point_processes()[synapse_index]
 
-    return new_synapse
+#     return new_synapse
