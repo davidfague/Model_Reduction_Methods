@@ -1069,17 +1069,40 @@ def duplicate_synapse(synapse):
     if syn_type not in synapse_types:
         raise ValueError(f"Unsupported synapse type: {syn_type}")
     
-    for pp in seg.point_processes():
-        #print(pp,pp.hname(),pp.get_loc())
-        #print(synapse,synapse.hname(),synapse.get_loc())
-        if pp.hname() == synapse.hname() and pp.get_loc() == synapse.get_loc():
-            new_synapse = synapse_types[syn_type](seg, pp.get_loc())
+
+    new_synapse = synapse_types[syn_type](seg, synapse.get_loc())
             # extract the parameters using hoc instead of PyNeuronToolbox
-            for param_name in dir(pp):
-                if not callable(getattr(pp, param_name)) and not param_name.startswith('__'):
-                    param_value = getattr(pp, param_name)
-                    if hasattr(new_synapse, param_name):
-                        setattr(new_synapse, param_name, param_value)
+    for param_name in dir(synapse):
+        if not callable(getattr(synapse, param_name)) and not param_name.startswith('__'):
+            param_value = getattr(synapse, param_name)
+            if hasattr(new_synapse, param_name):
+                setattr(new_synapse, param_name, param_value)
             return new_synapse
     
-    raise ValueError(f"No matching synapse found for {synapse.hname()} at location {synapse.get_loc()}")
+    raise ValueError(f"No matching synapse found for {synapse.hname()} at location {synapse.get_loc()}")            
+            
+# def duplicate_synapse(synapse):
+#     seg = synapse.get_segment()
+#     syn_type = synapse.hname().split('[')[0]  # Remove index from syn_type
+#     synapse_types = {
+#         'Exp2Syn': neuron.h.Exp2Syn
+
+#     }
+    
+#     if syn_type not in synapse_types:
+#         raise ValueError(f"Unsupported synapse type: {syn_type}")
+    
+#     for pp in seg.point_processes():
+#         #print(pp,pp.hname(),pp.get_loc())
+#         #print(synapse,synapse.hname(),synapse.get_loc())
+#         if pp.hname() == synapse.hname() and pp.get_loc() == synapse.get_loc():
+#             new_synapse = synapse_types[syn_type](seg, pp.get_loc())
+#             # extract the parameters using hoc instead of PyNeuronToolbox
+#             for param_name in dir(pp):
+#                 if not callable(getattr(pp, param_name)) and not param_name.startswith('__'):
+#                     param_value = getattr(pp, param_name)
+#                     if hasattr(new_synapse, param_name):
+#                         setattr(new_synapse, param_name, param_value)
+#             return new_synapse
+    
+#     raise ValueError(f"No matching synapse found for {synapse.hname()} at location {synapse.get_loc()}")
