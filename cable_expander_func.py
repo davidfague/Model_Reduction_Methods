@@ -1,6 +1,4 @@
 import pdb
-
-
 import collections
 import itertools as it
 import logging
@@ -1067,7 +1065,7 @@ def duplicate_synapse(syn1):
     
     # Create dictionary mapping synapse types to constructors
     synapse_types = {}
-    for syn_type in dir(nrn):
+    for syn_type in dir(neuron):
         if syn_type.endswith('Syn'):
             try:
                 synapse_types[syn_type] = getattr(nrn, syn_type)
