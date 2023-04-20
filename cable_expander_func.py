@@ -179,6 +179,7 @@ def cable_expander(original_cell,
                                                                                 sections_to_expand,sections_to_keep, #new_cable_properties,  #lists for each expansion
                                                                                 trunk_nsegs, branch_nsegs, #new_cables_nsegs,
                                                                                 subtrees_xs)
+    
 
 
     new_synapses_list, subtree_ind_to_q = adjust_new_tree_synapses(
@@ -196,7 +197,8 @@ def cable_expander(original_cell,
         cell,
         reduction_frequency)
 
-
+    distribute_branch_synapses(branches,netcons_list) #adjust synapses
+    
     # create segment to segment mapping
     original_seg_to_reduced_seg, reduced_seg_to_original_seg, = create_seg_to_seg(
         original_cell,
@@ -849,7 +851,7 @@ def adjust_new_tree_synapses(num_of_subtrees, roots_of_subtrees,
               x = synapse_location.x/x_furcation
             else: #synapse is distal to furcation meaning on branch
               nbranch=nbranches[section_to_expand_index] # number of branches on this tree
-              branch_index=trunk_index+int(np.random.uniform(1,nbranch+1)) #select random branch on this tree to move synapse to
+              branch_index=trunk_index+1 #select first branch on this tree to move synapse (later to distribute to each branch)
               if all_trunk_sec_type[section_to_expand_index]=='dend':
                 section_for_synapse = basals[branch_index]
               elif all_trunk_sec_type[section_to_expand_index]=='apic':
@@ -1030,4 +1032,26 @@ def copy_dendritic_mech(original_seg_to_reduced_seg,
                                vals_per_mech_per_segment,
                                mech_names_per_segment)
         
+        
+def distribute_branch_synapses(branches,netcons_list):
+  '''duplicates the given branch's synapses to the over branches and randomly distributes the netcon objects pointing at it.'''
+  branch_with_synapses=branches[0]
+  for seg in branch_with_synapses:
+    for synapse in seg.point_processes():
+      new_syns=[] #list for distributing netcons
+      new_syns.append(synapse)
+      for i in range(len(branches)-1):
+        # duplicate synapses to new location
+        new_syn=synapse.duplicate()
+        new_syns.append(new_syn)
+        x=synapse.get_loc()
+        new_syn.loc(x=x,sec=branches[i+1])
+    for synapse in seg.point_processes():
+      # distribute netcons randomly
+      for netcon in netcons_list: #have to inefficiently iterate through netcons list
+        syn=netcon.syn()
+        if syn==synapse:
+          rand_index=np.random.uniform(0,nbranch)#choose random branch synapse to move point netcon to
+          new_synapse=new_syns[rand_index] #adjust netcon to new synapse
+          netcon.setpost(new_synapse)
         
