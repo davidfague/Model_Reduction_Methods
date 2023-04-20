@@ -1059,7 +1059,8 @@ def distribute_branch_synapses(branches,netcons_list):
               new_synapse=new_syns[rand_index] #adjust netcon to new synapse
               print(synapse,' netcon',netcon,' moved to',new_synapse,' on sec',new_synapse.seg.sec)
               netcon.setpost(new_synapse)
-        
+ 
+
 def duplicate_synapse(synapse):
     # get the properties of the original synapse
     syn_type = synapse.hname()
@@ -1067,14 +1068,33 @@ def duplicate_synapse(synapse):
     loc = synapse.get_loc()
     syn_props = {prop: getattr(synapse, prop) for prop in dir(synapse) if not callable(getattr(synapse, prop)) and not prop.startswith("__")}
 
-    # construct a HOC command to create a new synapse object with the same properties
-    hoc_cmd = f"{seg}({loc}).{syn_type} = new {syn_type}({seg}({loc}))\n"
-    for prop, value in syn_props.items():
-        hoc_cmd += f"{seg}({loc}).{syn_type}.{prop} = {value}\n"
+    # create a new synapse object on the same segment
+    new_synapse = getattr(seg, syn_type).insert(loc)
 
-    # execute the command in HOC
-    h(hoc_cmd)
+    # set the properties of the new synapse object
+    for prop, value in syn_props.items():
+        setattr(new_synapse, prop, value)
 
     # return the new synapse object
-    new_synapse = getattr(getattr(seg, syn_type), "_ref_"+syn_type)
     return new_synapse
+
+
+
+# def duplicate_synapse(synapse):
+#     # get the properties of the original synapse
+#     syn_type = synapse.hname()
+#     seg = synapse.get_segment()
+#     loc = synapse.get_loc()
+#     syn_props = {prop: getattr(synapse, prop) for prop in dir(synapse) if not callable(getattr(synapse, prop)) and not prop.startswith("__")}
+
+#     # construct a HOC command to create a new synapse object with the same properties
+#     hoc_cmd = f"{seg}({loc}).{syn_type} = new {syn_type}({seg}({loc}))\n"
+#     for prop, value in syn_props.items():
+#         hoc_cmd += f"{seg}({loc}).{syn_type}.{prop} = {value}\n"
+
+#     # execute the command in HOC
+#     h(hoc_cmd)
+
+#     # return the new synapse object
+#     new_synapse = getattr(getattr(seg, syn_type), "_ref_"+syn_type)
+#     return new_synapse
