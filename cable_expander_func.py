@@ -1061,14 +1061,22 @@ def distribute_branch_synapses(branches,netcons_list):
               netcon.setpost(new_synapse)
         
 def duplicate_synapse(synapse):
-    # Create a new synapse object with the same type and location as the original synapse
-    synapse_str = f"{synapse.hname()}({synapse.get_segment()}({synapse.get_loc()}))"
-    new_synapse = h.eval(synapse_str)
-#     new_synapse = getattr(h, synapse.hname())(synapse.get_segment(), synapse.get_loc())
+    # get the properties of the original synapse
+    syn_type = synapse.hname()
+    seg = synapse.get_segment()
+    loc = synapse.get_loc()
+    syn_props = {prop: getattr(synapse, prop) for prop in dir(synapse) if not callable(getattr(synapse, prop)) and not prop.startswith("__")}
 
-    # Copy the attributes of the original synapse to the new synapse
-    for attr in dir(synapse):
-        if not attr.startswith('__') and not callable(getattr(synapse, attr)):
-            setattr(new_synapse, attr, getattr(synapse, attr))
+    # construct a HOC command to create a new synapse object with the same properties
+    hoc_cmd = f"objref new_synapse\n"
+    hoc_cmd += f"new_synapse = new {syn_type}({seg}({loc}))\n"
+    for prop, value in syn_props.items():
+        hoc_cmd += f"new_synapse.{prop} = {value}\n"
 
+    # create a HOC interpreter object and execute the command
+    hoc_interpreter = h.hoc_interpreter()
+    hoc_interpreter.execute(hoc_cmd)
+
+    # return the new synapse object
+    new_synapse = hoc_interpreter.getvar("new_synapse")
     return new_synapse
