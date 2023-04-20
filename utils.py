@@ -158,10 +158,10 @@ def make_seg_df(cell,savename="Segments.csv"):
     try:passive.loc(cell.hobj.soma[0](0.5))
     except:passive.loc(cell.soma[0](0.5))
     passive.compute(frequency + 1 / 9e9, 0)
-    active = h.Impedance()
-    try:active.loc(cell.hobj.soma[0](0.5))
-    except:active.loc(cell.soma[0](0.5))
-    active.compute(frequency + 1 / 9e9, 1)
+#     active = h.Impedance()
+#     try:active.loc(cell.hobj.soma[0](0.5))
+#     except:active.loc(cell.soma[0](0.5))
+#     active.compute(frequency + 1 / 9e9, 1)
 #############################################################
     
     psegids=[]
@@ -212,7 +212,7 @@ def make_seg_df(cell,savename="Segments.csv"):
             parts.append(sec_type)
             full_names.append(str(seg))
             passive_elec_distances.append(passive.ratio(seg))
-            active_elec_distances.append(active.ratio(seg))
+            #active_elec_distances.append(active.ratio(seg))
             section_names_by_seg.append(fullsecname)
             #if seg.sec.parentseg() is not None:
               #get parentseg coordinates or something to identify parentseg by
@@ -298,12 +298,12 @@ def make_reduced_seg_df(cell,savename="Segments.csv"):
       try: passive.loc(cell.soma[0](0.5))
       except: passive.loc(cell.soma(0.5))
     passive.compute(frequency + 1 / 9e9, 0)
-    active = h.Impedance()
-    try:active.loc(cell.hobj.soma[0](0.5))
-    except: 
-      try: active.loc(cell.soma[0](0.5))
-      except: active.loc(cell.soma(0.5))
-    active.compute(frequency + 1 / 9e9, 1)
+#     active = h.Impedance()
+#     try:active.loc(cell.hobj.soma[0](0.5))
+#     except: 
+#       try: active.loc(cell.soma[0](0.5))
+#       except: active.loc(cell.soma(0.5))
+#     active.compute(frequency + 1 / 9e9, 1)
 #############################################################
     
     psegids=[]
@@ -348,7 +348,7 @@ def make_reduced_seg_df(cell,savename="Segments.csv"):
             parts.append(sec_type) # section types
             full_names.append(str(seg))
             passive_elec_distances.append(passive.ratio(seg))
-            active_elec_distances.append(active.ratio(seg))
+#             active_elec_distances.append(active.ratio(seg))
             section_names_by_seg.append(fullsecname)
             #if seg.sec.parentseg() is not None:
               #get parentseg coordinates or something to identify parentseg by
