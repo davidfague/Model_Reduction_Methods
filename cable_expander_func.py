@@ -1057,39 +1057,47 @@ def distribute_branch_synapses(branches,netcons_list,synapses_list):
             #print(rand_index)
             new_synapse=new_syns[rand_index] #adjust netcon to new synapse
             netcon.setpost(new_synapse)
- 
-def duplicate_synapse(syn1):
-    # Get segment and location of original synapse
-    seg = syn1.get_segment()
-    loc = syn1.get_loc()
+
+def duplicate_synapse(synapse):
+    seg = synapse.get_segment()
+    synapse_index = seg.point_processes().index(synapse)
+    hoc_command = "objref new_synapse\nnew_synapse = new " + synapse.hname() + "(0.5)\n"
+    h(hoc_command)
+    new_synapse = seg.point_processes()[synapse_index + 1]
+    new_synapse.set(synapse.get())
+    return new_synapse
+# def duplicate_synapse(syn1):
+#     # Get segment and location of original synapse
+#     seg = syn1.get_segment()
+#     loc = syn1.get_loc()
     
-    # Create dictionary mapping synapse types to constructors
-    synapse_types = {}
-    for syn_type in dir(neuron):
-        if "Syn" in syn_type:
-            synapse_types[syn_type] = getattr(neuron, syn_type)
+#     # Create dictionary mapping synapse types to constructors
+#     synapse_types = {}
+#     for syn_type in dir(neuron):
+#         if "Syn" in syn_type:
+#             synapse_types[syn_type] = getattr(neuron, syn_type)
     
-    # Get name of synapse type
-    syn_type = syn1.hname()
+#     # Get name of synapse type
+#     syn_type = syn1.hname()
     
-    # Check if synapse type is in the dictionary
-    if syn_type in synapse_types:
-        # Create new synapse object of the same type
-        new_synapse = synapse_types[syn_type](loc, sec=seg.sec)
+#     # Check if synapse type is in the dictionary
+#     if syn_type in synapse_types:
+#         # Create new synapse object of the same type
+#         new_synapse = synapse_types[syn_type](loc, sec=seg.sec)
         
-        # Set parameters of new synapse to match the original synapse
-        for param_name in dir(syn1):
-            if not callable(getattr(syn1, param_name)) and not param_name.startswith('__'):
-                param_value = syn1.get(param_name)
-                try:
-                    new_synapse.set(param_name, param_value)
-                except:
-                    pass
+#         # Set parameters of new synapse to match the original synapse
+#         for param_name in dir(syn1):
+#             if not callable(getattr(syn1, param_name)) and not param_name.startswith('__'):
+#                 param_value = syn1.get(param_name)
+#                 try:
+#                     new_synapse.set(param_name, param_value)
+#                 except:
+#                     pass
         
-        return new_synapse
+#         return new_synapse
     
-    else:
-        raise ValueError(f"Unsupported synapse type: {syn_type}")
+#     else:
+#         raise ValueError(f"Unsupported synapse type: {syn_type}")
 
 # def duplicate_synapse(synapse):
 #     """Creates a duplicate synapse object with the same attributes as the given synapse object"""
