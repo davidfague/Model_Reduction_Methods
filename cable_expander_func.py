@@ -1035,25 +1035,24 @@ def copy_dendritic_mech(original_seg_to_reduced_seg,
         
 def distribute_branch_synapses(branches,netcons_list):
   '''duplicates the given branch's synapses to the over branches and randomly distributes the netcon objects pointing at it.'''
-  branch_with_synapses=branches[0]
-  print(branches)
-  print(branch_with_synapses)
-  for seg in branch_with_synapses:
-    for synapse in seg.point_processes():
-      new_syns=[] #list for distributing netcons
-      new_syns.append(synapse)
-      for i in range(len(branches)-1):
+  for branch_set in branches:
+    branch_with_synapses=branches[0]
+    for seg in branch_with_synapses:
+      for synapse in seg.point_processes():
+        new_syns=[] #list for distributing netcons
+        new_syns.append(synapse)
+        for i in range(len(branches)-1):
         # duplicate synapses to new location
-        new_syn=synapse.duplicate()
-        new_syns.append(new_syn)
-        x=synapse.get_loc()
-        new_syn.loc(x=x,sec=branches[i+1])
-    for synapse in seg.point_processes():
-      # distribute netcons randomly
-      for netcon in netcons_list: #have to inefficiently iterate through netcons list
-        syn=netcon.syn()
-        if syn==synapse:
-          rand_index=np.random.uniform(0,nbranch)#choose random branch synapse to move point netcon to
-          new_synapse=new_syns[rand_index] #adjust netcon to new synapse
-          netcon.setpost(new_synapse)
+          new_syn=synapse.duplicate()
+          new_syns.append(new_syn)
+          x=synapse.get_loc()
+          new_syn.loc(x=x,sec=branches[i+1])
+      for synapse in seg.point_processes():
+        # distribute netcons randomly
+        for netcon in netcons_list: #have to inefficiently iterate through netcons list
+          syn=netcon.syn()
+          if syn==synapse:
+            rand_index=np.random.uniform(0,nbranch)#choose random branch synapse to move point netcon to
+            new_synapse=new_syns[rand_index] #adjust netcon to new synapse
+            netcon.setpost(new_synapse)
         
