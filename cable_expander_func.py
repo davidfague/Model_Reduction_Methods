@@ -1063,13 +1063,14 @@ def distribute_branch_synapses(branches,netcons_list):
 
 def duplicate_synapse(synapse):
     # get the properties of the original synapse
-    syn_type = synapse.hname()
     seg = synapse.get_segment()
     loc = synapse.get_loc()
     syn_props = {prop: getattr(synapse, prop) for prop in dir(synapse) if not callable(getattr(synapse, prop)) and not prop.startswith("__")}
 
     # create a new synapse object on the same segment
-    new_synapse = getattr(seg, syn_type).insert(loc)
+    synapses_on_seg = seg.point_processes()
+    synapse_index = synapses_on_seg.index(synapse)
+    new_synapse = seg.point_processes()[synapse_index].duplicate(seg)
 
     # set the properties of the new synapse object
     for prop, value in syn_props.items():
