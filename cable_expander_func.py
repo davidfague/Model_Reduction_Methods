@@ -1067,7 +1067,7 @@ def duplicate_synapse(syn1):
     synapse_types = {}
     for syn_type in dir(nrn):
         if "Syn" in syn_type:
-            synapse_types[syn_type] = getattr(nrn, syn_type)
+            synapse_types[syn_type] = getattr(neuron, syn_type)
     
     # Get name of synapse type
     syn_type = syn1.hname()
