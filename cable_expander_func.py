@@ -1060,24 +1060,51 @@ def distribute_branch_synapses(branches,netcons_list):
               print(synapse,' netcon',netcon,' moved to',new_synapse,' on sec',new_synapse.seg.sec)
               netcon.setpost(new_synapse)
  
-
 def duplicate_synapse(synapse):
-    # get the properties of the original synapse
+    """Creates a duplicate synapse object with the same attributes as the given synapse object"""
     seg = synapse.get_segment()
-    loc = synapse.get_loc()
-    syn_props = {prop: getattr(synapse, prop) for prop in dir(synapse) if not callable(getattr(synapse, prop)) and not prop.startswith("__")}
+    synapse_index = int(synapse.get_loc())
 
-    # create a new synapse object on the same segment
-    synapses_on_seg = seg.point_processes()
-    synapse_index = synapses_on_seg.index(synapse)
-    new_synapse = seg.point_processes()[synapse_index].duplicate(seg)
+    # Get the synapse type
+    syn_type = synapse.hname()
 
-    # set the properties of the new synapse object
-    for prop, value in syn_props.items():
-        setattr(new_synapse, prop, value)
+    # Get the synapse parameters
+    params = {}
+    for key in synapse.__dict__.keys():
+        if key.startswith("_") or key == "hoc_interpreter":
+            continue
+        params[key] = getattr(synapse, key)
 
-    # return the new synapse object
+    # Create the new synapse object
+    hoc_command = "objref new_synapse\n"
+    hoc_command += "new_synapse = new " + syn_type + "(0.5)\n"
+    hoc_command += "new_synapse.loc(seg, " + str(synapse_index) + ")\n"
+    for key, value in params.items():
+        hoc_command += "new_synapse." + key + " = " + str(value) + "\n"
+    h(hoc_command)
+
+    # Get the new synapse object
+    new_synapse = seg.point_processes()[synapse_index]
+
     return new_synapse
+
+# def duplicate_synapse(synapse):
+#     # get the properties of the original synapse
+#     seg = synapse.get_segment()
+#     loc = synapse.get_loc()
+#     syn_props = {prop: getattr(synapse, prop) for prop in dir(synapse) if not callable(getattr(synapse, prop)) and not prop.startswith("__")}
+
+#     # create a new synapse object on the same segment
+#     synapses_on_seg = seg.point_processes()
+#     synapse_index = synapses_on_seg.index(synapse)
+#     new_synapse = seg.point_processes()[synapse_index].duplicate(seg)
+
+#     # set the properties of the new synapse object
+#     for prop, value in syn_props.items():
+#         setattr(new_synapse, prop, value)
+
+#     # return the new synapse object
+#     return new_synapse
 
 
 
