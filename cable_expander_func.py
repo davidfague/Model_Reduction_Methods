@@ -15,7 +15,7 @@ from neuron_reduce.subtree_reductor_func import (load_model, gather_subtrees, ma
                                                  type_of_point_process,synapse_properties_match,textify_seg_to_seg,
                                                  Neuron)
 from neuron_reduce.reducing_methods import (_get_subtree_biophysical_properties, measure_input_impedance_of_subtree, find_lowest_subtree_impedance, 
-                                            find_space_const_in_cm, push_section, find_best_real_X)
+                                            find_space_const_in_cm, push_section, find_best_real_X, add_PP_properties_to_dict)
 # can replace Neuron class import with another python cell class
 
 h.load_file("stdrun.hoc")
@@ -1076,7 +1076,7 @@ def duplicate_synapse(synapse,PP_params_dict):
     for param_name in PP_params_dict[syn_type]:
             param_value = getattr(synapse, param_name)
             try:setattr(new_synapse, param_name, param_value)
-            except: raise(print(new_synapse,param_name, param_value))
+            except: raise AttributeError("Cannot change set ",new_synapse," atrtibute ",param_name," to ",param_value,"may try inclduing attribute in skipped_params for PP_params_dict")
     return new_synapse
            
 
@@ -1101,20 +1101,4 @@ def redistribute_netcons(synapse,target_synapses,syn_to_netcon):
         continue
       else:
         netcon.setpost(target_synapses[rand_index-1]) #find corresponding synapse #point netcon toward synapse
-  
-def add_PP_properties_to_dict(PP, PP_params_dict):
-    '''
-    add the propeties of a point process to PP_params_dict.
-    The only propeties added to the dictionary are those worth comparing
-    may need to edit skipped params for new synapse types.
-    '''
-    skipped_params = {"Section", "allsec", "baseattr", "cas", "g", "get_loc", "has_loc", "hname",
-                      'hocobjptr', "i", "loc", "next", "ref", "same", "setpointer", "state",
-                      "get_segment", "DA1"
-                      }
-    PP_params = []
-    for param in dir(PP):
-        if param.startswith("__") or param in skipped_params:
-            continue
-        PP_params.append(param)
-    PP_params_dict[type_of_point_process(PP)] = PP_params
+
