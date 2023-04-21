@@ -1066,11 +1066,9 @@ def duplicate_synapse(synapse,PP_params_dict):
     syn_type = synapse.hname().split('[')[0]  # Remove index from syn_type
     new_synapse = eval('h.'+syn_type)(seg)
             # extract the parameters using hoc instead of PyNeuronToolbox
-    for param_name in dir(synapse):
-        if param_name in PP_params_dict[syn_type]:
+    for param_name in PP_params_dict[syn_type]:
             param_value = getattr(synapse, param_name)
-            if hasattr(new_synapse, param_name):
-                setattr(new_synapse, param_name, param_value)
+            setattr(new_synapse, param_name, param_value)
     return new_synapse
     
     raise ValueError(f"No matching synapse found for {synapse.hname()} at location {synapse.get_loc()}")            
