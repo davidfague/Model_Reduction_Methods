@@ -1032,7 +1032,13 @@ def copy_dendritic_mech(original_seg_to_reduced_seg,
         
         
 def distribute_branch_synapses(branches,netcons_list,synapses_list,PP_params_dict):
-  '''duplicates the given branch's synapses to the over branches and randomly distributes the netcon objects pointing at it.'''
+  '''
+  Works for after the synapses have been mapped to the first branch in the list.
+  duplicates each synapse on the first branch onto each other branch then splits the original synapse's netcons among the synapses.
+  branches: list of subtree lists of branch sections
+  netcons_list: list of netcon objects
+  synapses_list: list of synapse objects
+  '''
   syn_to_netcon = {}
   for netcon in netcons_list:
     syn = netcon.syn()
@@ -1064,6 +1070,10 @@ def distribute_branch_synapses(branches,netcons_list,synapses_list,PP_params_dic
             netcon.setpost(new_synapse)
 
 def duplicate_synapse(synapse,PP_params_dict):
+   '''
+   creates a new synapse object with the same parameters as the given synapse object
+   uses the dictionary for:
+   '''
     seg = synapse.get_segment()
     syn_type = synapse.hname().split('[')[0]  # Remove index from syn_type
     new_synapse = eval('h.'+syn_type)(seg)
