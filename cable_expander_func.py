@@ -179,13 +179,14 @@ def cable_expander(original_cell,
                                                                                 subtrees_xs)
     
 
-
+    syn_to_netcon = get_syn_to_netcons(netcons_list) # dictionary mapping netcons to their synapse
+    
     new_synapses_list, subtree_ind_to_q = adjust_new_tree_synapses(
         num_of_subtrees,roots_of_subtrees,
         range(len(sections_to_expand)),
         all_trunk_properties, all_branch_properties, nbranches, furcations_x, all_trunk_types, trunk_sec_type_list_indices,
         PP_params_dict,
-        synapses_list,
+        synapses_list, syn_to_netcon,
         mapping_sections_to_subtree_index,
         netcons_list,
         has_apical,
@@ -194,8 +195,15 @@ def cable_expander(original_cell,
         basals, apicals,
         cell,
         reduction_frequency)
-    #print("PP_params_dict",PP_params_dict)
-    distribute_branch_synapses(branches,netcons_list,new_synapses_list,PP_params_dict) #adjust synapses
+#     #print("PP_params_dict",PP_params_dict)
+#     #check synapses_list with netcons_list
+#     for netcon in netcons_list:
+#       syn=netcon.syn()
+#       if syn not in synapses_list:
+#         print(syn, netcon)
+
+    syn_to_netcon = get_syn_to_netcons(netcons_list) # dictionary mapping netcons to their synapse # re call to account for changes.. may need to adjust for efficiency
+    new_synapses_list=distribute_branch_synapses(branches,netcons_list,new_synapses_list,PP_params_dict,syn_to_netcon) #adjust synapses
     
     # create segment to segment mapping
     original_seg_to_reduced_seg, reduced_seg_to_original_seg, = create_seg_to_seg(
@@ -789,7 +797,7 @@ def adjust_new_tree_synapses(num_of_subtrees, roots_of_subtrees,
                            num_sections_to_expand,
                            trunk_properties, branch_properties, nbranches, furcations_x, all_trunk_sec_type, trunk_sec_type_list_indices, #list of indices for dend[], apic[] of trunk sections
                            PP_params_dict,
-                           synapses_list,
+                           synapses_list,syn_to_netcon,
                            mapping_sections_to_subtree_index,
                            netcons_list,
                            has_apical,
@@ -880,7 +888,9 @@ def adjust_new_tree_synapses(num_of_subtrees, roots_of_subtrees,
                     add_PP_properties_to_dict(PP, PP_params_dict)
 
                 if synapse_properties_match(synapse, PP, PP_params_dict):
-                    netcons_list[syn_index].setpost(PP)
+                    #netcons_list[syn_index].setpost(PP) #this does not work because there is no loger 1:1 correspondence between netcon and synapse
+                    for netcon in syn_to_netcon[synapse]:
+                      netcon.setpost(PP)
                     break
             else:  # If for finish the loop -> first appearance of this synapse
                 synapse.loc(x, sec=section_for_synapse)
@@ -1031,7 +1041,7 @@ def copy_dendritic_mech(original_seg_to_reduced_seg,
                                mech_names_per_segment)
         
         
-def distribute_branch_synapses(branch_sets,netcons_list,synapses_list,PP_params_dict):
+def distribute_branch_synapses(branch_sets,netcons_list,synapses_list,PP_params_dict,syn_to_netcon):
   '''
   Works for after the synapses have been mapped to the first branch in the list.
   duplicates each synapse on the first branch onto each other branch then splits the original synapse's netcons among the synapses.
@@ -1039,7 +1049,6 @@ def distribute_branch_synapses(branch_sets,netcons_list,synapses_list,PP_params_
   netcons_list: list of netcon objects
   synapses_list: list of synapse objects
   '''
-  syn_to_netcon = get_syn_to_netcons(netcons_list) # dictionary mapping netcons to their synapse
   for branch_set in branch_sets: #branch_sets variable is a list of lists of sections
     branch_with_synapses=branch_set[0] #branch with synapses is the first section within the list
     for seg in branch_with_synapses:
