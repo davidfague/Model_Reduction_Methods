@@ -398,6 +398,10 @@ def make_reduced_seg_df(cell,savename="Segments.csv"):
     df["Passive ElecDist"] = passive_elec_distances
     df["Active ElecDist"] = active_elec_distances
     df["Section Name"] = section_names_by_seg
+    df["exc_NetCons"]=cell.exc_NetCon_per_seg
+    df["inh_NetCons"]=cell.inh_NetCon_per_seg
+    df["inh_NetCon_density"]=df["inh_NetCons"]/df["Seg_L"]
+    df["exc_NetCon_density"]=df["exc_NetCons"]/df["Seg_L"]
 
 
     df.to_csv(savename, index=False)
