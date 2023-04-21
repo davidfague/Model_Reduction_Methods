@@ -1064,7 +1064,7 @@ def duplicate_synapse(synapse,PP_params_dict):
     new_synapse = eval('h.'+syn_type)(seg)
             # extract the parameters using hoc instead of PyNeuronToolbox
     for param_name in dir(synapse):
-        if not callable(getattr(synapse, param_name)) and not param_name.startswith('__'):
+        if param_name in PP_param_dict[syn_type]:
             param_value = getattr(synapse, param_name)
             if hasattr(new_synapse, param_name):
                 setattr(new_synapse, param_name, param_value)
