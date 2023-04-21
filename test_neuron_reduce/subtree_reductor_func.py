@@ -433,7 +433,7 @@ def add_PP_properties_to_dict(PP, PP_params_dict):
     '''
     skipped_params = {"Section", "allsec", "baseattr", "cas", "g", "get_loc", "has_loc", "hname",
                       'hocobjptr', "i", "loc", "next", "ref", "same", "setpointer", "state",
-                      "get_segment", "DA1", "eta", "omega", "DA2", "NEn", "NE2", "GAP1", "unirand", "randGen", "sfunc"
+                      "get_segment", "DA1", "eta", "omega", "DA2", "NEn", "NE2", "GAP1", "unirand", "randGen", "sfunc", "erand"
                       }
     PP_params = []
     for param in dir(PP):
