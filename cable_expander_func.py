@@ -1045,12 +1045,11 @@ def distribute_branch_synapses(branches,netcons_list,synapses_list,PP_params_dic
     for seg in branch_with_synapses:
       for synapse in seg.point_processes():
         x=synapse.get_loc() # get loc of original synapse
-        new_syns=[] #list for redistributing netcons
-        new_syns.append(synapse) #make original synapse an option for netcon
+        new_syns=[synapse] #list for redistributing netcons #make original synapse an option for netcon
         for i in range(len(branch_set)-1): # duplicate synapse onto each corresponding branch location
           new_syn=duplicate_synapse(synapse,PP_params_dict) #generate new identical synapse
-          new_syns.append(new_syn) # make new synapse an option for neton to point to
-          synapses_list.append(new_syn) #updata total synapses_list to include new synapse object
+          new_syns.append(new_syn) # make new synapse an option for netcon to point to
+          synapses_list.append(new_syn) #update total synapses_list to include new synapse object
           new_syn.loc(branch_set[i+1](x)) #place new synapse onto each branch
         for netcon in syn_to_netcon[synapse]: # redistribute netcons
             rand_index = np.random.randint(0, len(branch_set)) #choose random branch to move point netcon to
