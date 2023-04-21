@@ -280,3 +280,29 @@ class cell_model():
         self.synapse.append(Listed_Synapse(synapse,synapse_netcons)) #record synapse and add to the list
       else:
         print('Warning: ', synapse, 'does not have any netcons pointing at it. if synapse is None then deleted synapse may be stored in synapses_list')
+
+def calculate_netcons_per_seg(self):
+  self.NetCon_per_seg=[0]*len(self.segments)
+  self.inh_NetCon_per_seg=[0]*len(self.segments)
+  self.exc_NetCon_per_seg=[0]*len(self.segments)
+
+  #calculate number of synapses for each segment (may want to divide by segment length afterward to get synpatic density)
+  for netcon in self.netcons_list:
+    syn=netcon.syn()
+    if syn in synapses_list:
+      syn_seg_id=self.segments.index(netcon.syn().get_segment())
+      if syn in self.segments[syn_seg_id].point_processes():
+        self.NetCon_per_seg[syn_seg_id]+=1 # get synapses per segment
+        # NetCon_per_seg[syn_seg_id].append(netcon) # possible implementation if needing objects per segment
+        if syn.e > v_rest:
+          self.exc_NetCon_per_seg[syn_seg_id]+=1
+          # exc_NetCon_per_seg[syn_seg_id].append(netcon)# possible implementation if needing objects per segment
+        else:
+          self.inh_NetCon_per_seg[syn_seg_id]+=1
+          # inh_NetCon_per_seg[syn_seg_id].append(netcon)# possible implementation if needing objects per segment
+      else:
+        print("Warning: synapse not in designated segment's point processes")
+
+    else:
+      print("Warning: potentially deleted synapse:","|NetCon obj:",netcon,"|Synapse obj:",syn,"the NetCon's synapse is not in synapses_list. Check corresponding original cell's NetCon for location, etc.")
+    
