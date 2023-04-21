@@ -194,7 +194,7 @@ def cable_expander(original_cell,
         basals, apicals,
         cell,
         reduction_frequency)
-    print("pp_params_dict",pp_params_dict)
+    print("PP_params_dict",PP_params_dict)
     distribute_branch_synapses(branches,netcons_list,new_synapses_list) #adjust synapses
     
     # create segment to segment mapping
