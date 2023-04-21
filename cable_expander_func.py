@@ -1100,5 +1100,5 @@ def redistribute_netcons(synapse,target_synapses,syn_to_netcon):
       if rand_index==0: #if 0, keep netcon on original synapse
         continue
       else:
-        netcon.setpost(target_synapses[rand_index]) #find corresponding synapse #point netcon toward synapse
+        netcon.setpost(target_synapses[rand_index-1]) #find corresponding synapse #point netcon toward synapse
 
