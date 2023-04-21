@@ -1064,10 +1064,10 @@ def distribute_branch_synapses(branches,netcons_list,synapses_list,PP_params_dic
             netcon.setpost(new_synapse) #point netcon toward synapse
 
 def duplicate_synapse(synapse,PP_params_dict):
-   '''
-   creates a new synapse object with the same parameters as the given synapse object
-   uses the dictionary for:
-   '''
+    '''
+    creates a new synapse object with the same parameters as the given synapse object
+    uses the dictionary for:
+    '''
     seg = synapse.get_segment()
     syn_type = synapse.hname().split('[')[0]  # Remove index from syn_type
     new_synapse = eval('h.'+syn_type)(seg)
@@ -1080,29 +1080,3 @@ def duplicate_synapse(synapse,PP_params_dict):
             return new_synapse
     
     raise ValueError(f"No matching synapse found for {synapse.hname()} at location {synapse.get_loc()}")            
-            
-# def duplicate_synapse(synapse):
-#     seg = synapse.get_segment()
-#     syn_type = synapse.hname().split('[')[0]  # Remove index from syn_type
-#     synapse_types = {
-#         'Exp2Syn': neuron.h.Exp2Syn
-
-#     }
-    
-#     if syn_type not in synapse_types:
-#         raise ValueError(f"Unsupported synapse type: {syn_type}")
-    
-#     for pp in seg.point_processes():
-#         #print(pp,pp.hname(),pp.get_loc())
-#         #print(synapse,synapse.hname(),synapse.get_loc())
-#         if pp.hname() == synapse.hname() and pp.get_loc() == synapse.get_loc():
-#             new_synapse = synapse_types[syn_type](seg, pp.get_loc())
-#             # extract the parameters using hoc instead of PyNeuronToolbox
-#             for param_name in dir(pp):
-#                 if not callable(getattr(pp, param_name)) and not param_name.startswith('__'):
-#                     param_value = getattr(pp, param_name)
-#                     if hasattr(new_synapse, param_name):
-#                         setattr(new_synapse, param_name, param_value)
-#             return new_synapse
-    
-#     raise ValueError(f"No matching synapse found for {synapse.hname()} at location {synapse.get_loc()}")
