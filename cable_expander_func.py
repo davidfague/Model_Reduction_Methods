@@ -1076,7 +1076,7 @@ def duplicate_synapse(synapse,PP_params_dict):
     for param_name in PP_params_dict[syn_type]:
             param_value = getattr(synapse, param_name)
             try:setattr(new_synapse, param_name, param_value)
-            except: raise AttributeError("Cannot change set ",new_synapse," atrtibute ",param_name," to ",param_value,"may try inclduing attribute in skipped_params for PP_params_dict")
+            except: raise AttributeError('Cannot set',new_synapse,'attribute',param_name,'to',param_value,'may try including attribute in skipped_params for PP_params_dict')
     return new_synapse
            
 
