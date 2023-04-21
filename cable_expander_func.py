@@ -1096,7 +1096,7 @@ def redistribute_netcons(synapse,target_synapses,syn_to_netcon):
     target_synapses: list of new synapses
     '''
     for netcon in syn_to_netcon[synapse]: # redistribute netcons
-      rand_index = np.random.randint(0, len(target_synapses)) #choose random branch to move point netcon to
+      rand_index = np.random.randint(0, len(target_synapses)+1) #choose random branch to move point netcon to
       if rand_index==0: #if 0, keep netcon on original synapse
         continue
       else:
