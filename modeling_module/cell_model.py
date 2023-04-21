@@ -39,6 +39,7 @@ class cell_model():
     self.__store_synapses_list() #store and record synapses from the synapses_list used to initialize the cell
     self.grp_ids = []
     self.generate_geometry_file()
+    self.calculate_netcons_per_seg()
 
   def __calc_seg_coords(self):
     """Calculate segment coordinates for ECP calculation"""
