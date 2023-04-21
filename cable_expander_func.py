@@ -1039,35 +1039,29 @@ def distribute_branch_synapses(branches,netcons_list,synapses_list,PP_params_dic
   netcons_list: list of netcon objects
   synapses_list: list of synapse objects
   '''
-  syn_to_netcon = {}
-  for netcon in netcons_list:
-    syn = netcon.syn()
+  syn_to_netcon = {} # dictionary mapping netcons to their synapse
+  for netcon in netcons_list: #fill in dictionary
+    syn = netcon.syn() # get the synapse that netcon points to
     if syn in syn_to_netcon:
-        syn_to_netcon[syn].append(netcon)
+        syn_to_netcon[syn].append(netcon) #add netcon to existing synapse key
     else:
-        syn_to_netcon[syn] = [netcon]
-  for branch_set in branches:
-#     print(branch_set)
-    branch_with_synapses=branch_set[0]
-#     print('original branch',branch_with_synapses)
+        syn_to_netcon[syn] = [netcon] #create new synapse key using netcon as an item
+  for branch_set in branches: #branches variable is a list of lists of sections
+    branch_with_synapses=branch_set[0] #branch with synapses is the first section within the list of sections
     for seg in branch_with_synapses:
-#       print(seg)
       for synapse in seg.point_processes():
-#         print(synapse)
-        new_syns=[] #list for distributing netcons
-        new_syns.append(synapse)
-        for i in range(len(branch_set)-1):
-        # duplicate synapses to new location
-          new_syn=duplicate_synapse(synapse,PP_params_dict)
-          new_syns.append(new_syn)
-          synapses_list.append(new_syn)
-          x=synapse.get_loc()
-          new_syn.loc(branch_set[i+1](x))
-        for netcon in syn_to_netcon[synapse]:
-            rand_index = np.random.randint(0, len(branch_set))#choose random branch synapse to move point netcon to
-            #print(rand_index)
-            new_synapse=new_syns[rand_index] #adjust netcon to new synapse
-            netcon.setpost(new_synapse)
+        x=synapse.get_loc() # get loc of original synapse
+        new_syns=[] #list for redistributing netcons
+        new_syns.append(synapse) #make original synapse an option for netcon
+        for i in range(len(branch_set)-1): # duplicate synapse onto each corresponding branch location
+          new_syn=duplicate_synapse(synapse,PP_params_dict) #generate new identical synapse
+          new_syns.append(new_syn) # make new synapse an option for neton to point to
+          synapses_list.append(new_syn) #updata total synapses_list to include new synapse object
+          new_syn.loc(branch_set[i+1](x)) #place new synapse onto each branch
+        for netcon in syn_to_netcon[synapse]: # redistribute netcons
+            rand_index = np.random.randint(0, len(branch_set)) #choose random branch to move point netcon to
+            new_synapse=new_syns[rand_index] #find corresponding synapse
+            netcon.setpost(new_synapse) #point netcon toward synapse
 
 def duplicate_synapse(synapse,PP_params_dict):
    '''
