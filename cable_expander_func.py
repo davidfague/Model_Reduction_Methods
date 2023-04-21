@@ -1031,30 +1031,29 @@ def copy_dendritic_mech(original_seg_to_reduced_seg,
                                mech_names_per_segment)
         
         
-def distribute_branch_synapses(branches,netcons_list,synapses_list,PP_params_dict):
+def distribute_branch_synapses(branch_sets,netcons_list,synapses_list,PP_params_dict):
   '''
   Works for after the synapses have been mapped to the first branch in the list.
   duplicates each synapse on the first branch onto each other branch then splits the original synapse's netcons among the synapses.
-  branches: list of subtree lists of branch sections
+  branch_sets: list of subtree lists of branch sections (list of lists for the case where more than one section was expanded)
   netcons_list: list of netcon objects
   synapses_list: list of synapse objects
   '''
   syn_to_netcon = get_syn_to_netcons(netcons_list) # dictionary mapping netcons to their synapse
-  for branch_set in branches: #branches variable is a list of lists of sections
-    branch_with_synapses=branch_set[0] #branch with synapses is the first section within the list of sections
+  for branch_set in branch_sets: #branch_sets variable is a list of lists of sections
+    branch_with_synapses=branch_set[0] #branch with synapses is the first section within the list
     for seg in branch_with_synapses:
       for synapse in seg.point_processes():
         x=synapse.get_loc() # get loc of original synapse
-        new_syns=[synapse] #list for redistributing netcons #make original synapse an option for netcon
+        new_syns=[] #list for redistributing netcons #make original synapse an option for netcon
         for i in range(len(branch_set)-1): # duplicate synapse onto each corresponding branch location
           new_syn=duplicate_synapse(synapse,PP_params_dict) #generate new identical synapse
           new_syns.append(new_syn) # make new synapse an option for netcon to point to
           synapses_list.append(new_syn) #update total synapses_list to include new synapse object
           new_syn.loc(branch_set[i+1](x)) #place new synapse onto each branch
-        for netcon in syn_to_netcon[synapse]: # redistribute netcons
-            rand_index = np.random.randint(0, len(branch_set)) #choose random branch to move point netcon to
-            new_synapse=new_syns[rand_index] #find corresponding synapse
-            netcon.setpost(new_synapse) #point netcon toward synapse
+        redistribute_netcons(synapse,new_syns,syn_to_netcon)
+
+  return synapses_list
 
 def duplicate_synapse(synapse,PP_params_dict):
     '''
@@ -1067,10 +1066,10 @@ def duplicate_synapse(synapse,PP_params_dict):
             # extract the parameters using hoc instead of PyNeuronToolbox
     for param_name in PP_params_dict[syn_type]:
             param_value = getattr(synapse, param_name)
-            setattr(new_synapse, param_name, param_value)
+            try:setattr(new_synapse, param_name, param_value)
+            except: raise(print(new_synapse,param_name, param_value))
     return new_synapse
-    
-    raise ValueError(f"No matching synapse found for {synapse.hname()} at location {synapse.get_loc()}")            
+           
 
 def get_syn_to_netcons(netcons_list):
     syn_to_netcon = {} # dictionary mapping netcons to their synapse
@@ -1081,4 +1080,16 @@ def get_syn_to_netcons(netcons_list):
       else:
           syn_to_netcon[syn] = [netcon] #create new synapse key using netcon as an item
     return syn_to_netcon
+       
+            
+def redistribute_netcons(synapse,target_synapses,syn_to_netcon):
+    '''randomly chooses a new synapse among the original and new choices to point the netcon to
+    target_synapses: list of new synapses
+    '''
+    for netcon in syn_to_netcon[synapse]: # redistribute netcons
+      rand_index = np.random.randint(0, len(target_synapses)) #choose random branch to move point netcon to
+      if rand_index==0: #if 0, keep netcon on original synapse
+        continue
+      else:
+        netcon.setpost(target_synapses[rand_index-1]) #find corresponding synapse #point netcon toward synapse
   
