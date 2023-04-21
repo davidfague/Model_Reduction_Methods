@@ -194,7 +194,7 @@ def cable_expander(original_cell,
         basals, apicals,
         cell,
         reduction_frequency)
-
+    print("pp_params_dict",pp_params_dict)
     distribute_branch_synapses(branches,netcons_list,new_synapses_list) #adjust synapses
     
     # create segment to segment mapping
@@ -1061,6 +1061,7 @@ def distribute_branch_synapses(branches,netcons_list,synapses_list):
 def duplicate_synapse(synapse):
     seg = synapse.get_segment()
     syn_type = synapse.hname().split('[')[0]  # Remove index from syn_type
+    #This dictionary will need to be updated to include synapse types
     synapse_types = {
         'Exp2Syn': h.Exp2Syn,
         'int2pyr': h.int2pyr
