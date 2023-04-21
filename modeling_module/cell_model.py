@@ -279,4 +279,4 @@ class cell_model():
           synapse_netcons.append(self.netcons_list[netcon_id])
         self.synapse.append(Listed_Synapse(synapse,synapse_netcons)) #record synapse and add to the list
       else:
-        print('Warning: Synapse not in temp_list.')
+        print('Warning: ', synapse, 'does not have any netcons pointing at it. if synapse is None then deleted synapse may be stored in synapses_list')
