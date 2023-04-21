@@ -1039,13 +1039,7 @@ def distribute_branch_synapses(branches,netcons_list,synapses_list,PP_params_dic
   netcons_list: list of netcon objects
   synapses_list: list of synapse objects
   '''
-  syn_to_netcon = {} # dictionary mapping netcons to their synapse
-  for netcon in netcons_list: #fill in dictionary
-    syn = netcon.syn() # get the synapse that netcon points to
-    if syn in syn_to_netcon:
-        syn_to_netcon[syn].append(netcon) #add netcon to existing synapse key
-    else:
-        syn_to_netcon[syn] = [netcon] #create new synapse key using netcon as an item
+  syn_to_netcon = get_syn_to_netcons(netcons_list) # dictionary mapping netcons to their synapse
   for branch_set in branches: #branches variable is a list of lists of sections
     branch_with_synapses=branch_set[0] #branch with synapses is the first section within the list of sections
     for seg in branch_with_synapses:
@@ -1077,6 +1071,17 @@ def duplicate_synapse(synapse,PP_params_dict):
             param_value = getattr(synapse, param_name)
             if hasattr(new_synapse, param_name):
                 setattr(new_synapse, param_name, param_value)
-            return new_synapse
+    return new_synapse
     
     raise ValueError(f"No matching synapse found for {synapse.hname()} at location {synapse.get_loc()}")            
+
+def get_syn_to_netcons(netcons_list):
+    syn_to_netcon = {} # dictionary mapping netcons to their synapse
+    for netcon in netcons_list: #fill in dictionary
+      syn = netcon.syn() # get the synapse that netcon points to
+      if syn in syn_to_netcon:
+          syn_to_netcon[syn].append(netcon) #add netcon to existing synapse key
+      else:
+          syn_to_netcon[syn] = [netcon] #create new synapse key using netcon as an item
+     return syn_to_netcon
+  
