@@ -1080,5 +1080,5 @@ def get_syn_to_netcons(netcons_list):
           syn_to_netcon[syn].append(netcon) #add netcon to existing synapse key
       else:
           syn_to_netcon[syn] = [netcon] #create new synapse key using netcon as an item
-     return syn_to_netcon
+    return syn_to_netcon
   
