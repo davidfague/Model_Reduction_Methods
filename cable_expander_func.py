@@ -194,8 +194,8 @@ def cable_expander(original_cell,
         basals, apicals,
         cell,
         reduction_frequency)
-    print("PP_params_dict",PP_params_dict)
-    distribute_branch_synapses(branches,netcons_list,new_synapses_list) #adjust synapses
+    #print("PP_params_dict",PP_params_dict)
+    distribute_branch_synapses(branches,netcons_list,new_synapses_list,PP_params_dict) #adjust synapses
     
     # create segment to segment mapping
     original_seg_to_reduced_seg, reduced_seg_to_original_seg, = create_seg_to_seg(
@@ -1031,7 +1031,7 @@ def copy_dendritic_mech(original_seg_to_reduced_seg,
                                mech_names_per_segment)
         
         
-def distribute_branch_synapses(branches,netcons_list,synapses_list):
+def distribute_branch_synapses(branches,netcons_list,synapses_list,PP_params_dict):
   '''duplicates the given branch's synapses to the over branches and randomly distributes the netcon objects pointing at it.'''
   for branch_set in branches:
 #     print(branch_set)
@@ -1045,7 +1045,7 @@ def distribute_branch_synapses(branches,netcons_list,synapses_list):
         new_syns.append(synapse)
         for i in range(len(branch_set)-1):
         # duplicate synapses to new location
-          new_syn=duplicate_synapse(synapse)
+          new_syn=duplicate_synapse(synapse,PP_params_dict)
           new_syns.append(new_syn)
           synapses_list.append(new_syn)
           x=synapse.get_loc()
@@ -1058,22 +1058,10 @@ def distribute_branch_synapses(branches,netcons_list,synapses_list):
             new_synapse=new_syns[rand_index] #adjust netcon to new synapse
             netcon.setpost(new_synapse)
 
-def duplicate_synapse(synapse):
+def duplicate_synapse(synapse,PP_params_dict):
     seg = synapse.get_segment()
     syn_type = synapse.hname().split('[')[0]  # Remove index from syn_type
-    #This dictionary will need to be updated to include synapse types
-    synapse_types = {
-        'Exp2Syn': h.Exp2Syn,
-        'int2pyr': h.int2pyr
-
-
-    }
-    
-    if syn_type not in synapse_types:
-        raise ValueError(f"Unsupported synapse type: {syn_type}")
-    
-
-    new_synapse = synapse_types[syn_type](seg)
+    new_synapse = eval('h.'+syn_type)(seg)
             # extract the parameters using hoc instead of PyNeuronToolbox
     for param_name in dir(synapse):
         if not callable(getattr(synapse, param_name)) and not param_name.startswith('__'):
