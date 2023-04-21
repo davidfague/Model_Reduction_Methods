@@ -604,3 +604,19 @@ def create_seg_var_report(reportname,dataname):
   f = h5py.File(reportname,'w')
   v = f.create_dataset("report/biophysical/data", data = dataname)
   f.close()
+  
+def plot_seg_heatmap(seg_df,label=str,savename=str,color_column=str):
+  '''color_column: name of the column that you want to use as the parameter for heatmap color'''
+  plt.figure(figsize=(4,10))
+  ax = plt.scatter(seg_df["Coord X"], seg_df["Coord Y"],c = seg_df[color_column],cmap='jet',)
+  plt.vlines(110,400,500)
+  plt.text(0,450,'100 um')
+  plt.hlines(400,110,210)
+  plt.text(110,350,'100 um')
+  plt.xticks([])
+  plt.yticks([])
+  cbar = plt.colorbar()
+  cbar.ax.set_ylabel(label, rotation=270)
+
+  plt.box(False)
+  plt.savefig(savename+'.svg')
