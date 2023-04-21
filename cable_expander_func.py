@@ -1062,7 +1062,9 @@ def duplicate_synapse(synapse):
     seg = synapse.get_segment()
     syn_type = synapse.hname().split('[')[0]  # Remove index from syn_type
     synapse_types = {
-        'Exp2Syn': neuron.h.Exp2Syn
+        'Exp2Syn': h.Exp2Syn,
+        'int2pyr': h.int2pyr
+
 
     }
     
@@ -1070,7 +1072,7 @@ def duplicate_synapse(synapse):
         raise ValueError(f"Unsupported synapse type: {syn_type}")
     
 
-    new_synapse = synapse_types[syn_type](seg, synapse.get_loc())
+    new_synapse = synapse_types[syn_type](seg)
             # extract the parameters using hoc instead of PyNeuronToolbox
     for param_name in dir(synapse):
         if not callable(getattr(synapse, param_name)) and not param_name.startswith('__'):
