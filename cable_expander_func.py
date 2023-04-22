@@ -351,7 +351,9 @@ def expand_cable(section_to_expand, frequency, furcation_x, nbranch):
     Branch length is chosen so that electrotonic length of the dendritic tree is the same as the cable's electrotonic length.
     Ra and Ri are kept the same.
     '''
+    
     # calculate the electrotonic length of the cable
+    cm, rm, ra, e_pas, q = _get_subtree_biophysical_properties(h.SectionRef(sec=section_to_expand), frequency)
     cable_space_const_in_cm = find_space_const_in_cm(section_to_expand(0.5).diam/10000, rm, ra)
     cable_elec_L = section_to_expand.L/cable_space_const_in_cm
     
@@ -373,7 +375,6 @@ def expand_cable(section_to_expand, frequency, furcation_x, nbranch):
     trunk_Rm = 1/section_to_expand(0.5).pas.g
     trunk_L = section_to_expand.L*furcation_x
     sec_type = section_to_expand.name().split(".")[1][:4]
-    cm, rm, ra, e_pas, q = _get_subtree_biophysical_properties(h.SectionRef(sec=section_to_expand), frequency)
     
     # create CableParams objects for the trunk and branch
     trunk_params = CableParams(length=trunk_L, diam=trunk_diam, space_const=cable_space_const_in_cm*10000,
