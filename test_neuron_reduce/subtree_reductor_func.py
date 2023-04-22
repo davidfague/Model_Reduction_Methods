@@ -229,6 +229,8 @@ def create_segments_to_mech_vals(sections_to_delete,
         segment_to_mech_vals[seg] = {}
         for mech in seg:
             mech_name = mech.name()
+            if mech_name=='extracellular':
+              continue
             segment_to_mech_vals[seg][mech_name] = {}
             for n in dir(mech):
                 if n.startswith('__') or n in ('next', 'name', 'is_ion', 'segment', ):
