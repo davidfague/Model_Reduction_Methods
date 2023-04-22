@@ -130,7 +130,6 @@ def cable_expander(original_cell,
     # disconnects all the sections_to_expand from the soma
     subtrees_xs = []
     for section_to_expand in sections_to_expand:
-        subtrees_xs.append(section_to_expand.parentseg().x)
         h.disconnect(sec=section_to_expand)
 
     # expanding the subtrees
@@ -355,7 +354,7 @@ def expand_cable(section_to_expand, frequency, furcation_x, nbranch):
     # calculate the electrotonic length of the cable
     cm, rm, ra, e_pas, q = _get_subtree_biophysical_properties(h.SectionRef(sec=section_to_expand), frequency)
     cable_space_const_in_cm = find_space_const_in_cm(section_to_expand(0.5).diam/10000, rm, ra)
-    cable_elec_L = section_to_expand.L/cable_space_const_in_cm
+    cable_elec_L = section_to_expand.L/(cable_space_const_in_cm*10000)
     
     # calculate the diameter of each branch
     trunk_diam = section_to_expand.diam
@@ -372,8 +371,6 @@ def expand_cable(section_to_expand, frequency, furcation_x, nbranch):
     
     # calculate the other parameters for each branch
     trunk_diam_in_cm = trunk_diam/10000
-    trunk_Ri = section_to_expand.Ra
-    trunk_Rm = 1/section_to_expand(0.5).pas.g
     trunk_L = section_to_expand.L*furcation_x
     sec_type = section_to_expand.name().split(".")[1][:4]
     
