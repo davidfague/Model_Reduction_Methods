@@ -359,14 +359,13 @@ def expand_cable(section_to_expand, frequency, furcation_x, nbranch):
     
     # calculate the diameter of each branch
     trunk_diam = section_to_expand.diam
-    branch_diam = (trunk_diam**(3/2)/nbranch)**(2/3)
-    branch_diam_in_cm = branch_diam/10000
+    branch_diam_in_micron = (trunk_diam**(3/2)/nbranch)**(2/3)
+    branch_diam_in_cm = branch_diam_in_micron/10000
     
     # calculate the electrotonic length of each branch
     trunk_elec_L = furcation_x * cable_elec_L
     branch_elec_L = cable_elec_L - trunk_elec_L
-    branch_diam_in_micron = branch_diam * 10000  # Convert branch diameter from cm to microns
-    branch_space_const_in_cm = find_space_const_in_cm(branch_diam_in_micron, rm, ra)
+    branch_space_const_in_cm = find_space_const_in_cm(branch_diam_in_cm, rm, ra)  # Convert back to cm
     branch_space_const_in_micron = 10000 * branch_space_const_in_cm
     branch_L = branch_elec_L * branch_space_const_in_micron
     
@@ -382,7 +381,7 @@ def expand_cable(section_to_expand, frequency, furcation_x, nbranch):
                                cm=cm, rm=rm, ra=ra, e_pas=e_pas, electrotonic_length=trunk_elec_L,
                                type=sec_type, furcation_x=furcation_x)
     
-    branch_params = CableParams(length=branch_L, diam=branch_diam, space_const=branch_space_const_in_micron,
+    branch_params = CableParams(length=branch_L, diam=branch_diam_in_micron, space_const=branch_space_const_in_micron,
                                 cm=cm, rm=rm, ra=ra, e_pas=e_pas, electrotonic_length=branch_elec_L,
                                 type=sec_type, furcation_x=furcation_x)
     print('branch_L:',branch_L,'|branch_diam:',branch_diam,'|trunk_L:',trunk_L,'|trunk_diam:',trunk_diam)
