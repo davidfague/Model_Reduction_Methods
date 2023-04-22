@@ -290,7 +290,7 @@ class cell_model():
     #calculate number of synapses for each segment (may want to divide by segment length afterward to get synpatic density)
     for netcon in self.netcons_list:
       syn=netcon.syn()
-      if syn in synapses_list:
+      if syn in self.synapses_list:
         syn_seg_id=self.segments.index(netcon.syn().get_segment())
         if syn in self.segments[syn_seg_id].point_processes():
           self.NetCon_per_seg[syn_seg_id]+=1 # get synapses per segment
