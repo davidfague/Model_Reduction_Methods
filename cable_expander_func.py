@@ -474,7 +474,7 @@ def create_dendritic_cell(soma_cable,
         elif trunk_sec_type == 'apic':  # apical
             # trunk
             trunk_index = number_of_sections_in_apical_list
-            branches_for_trunk = add_trunk_and_branches(["apic", "apical", apicals], trunsk, trunk_index, trunk_cable_params, trunk_nseg, nbranch, branch_cable_params, branch_nseg, soma, subtrees_xs[i], all_expanded_sections, number_of_sections_in_apical_list)
+            branches_for_trunk = add_trunk_and_branches(["apic", "apical", apicals], trunks, trunk_index, trunk_cable_params, trunk_nseg, nbranch, branch_cable_params, branch_nseg, soma, subtrees_xs[i], all_expanded_sections, number_of_sections_in_apical_list)
             trunk_sec_type_list_indices.append(trunk_index)  # get list of trunk indices for trunk's respective sec_type_list (apic or dend)
             branches.append(branches_for_trunk)
         else:
