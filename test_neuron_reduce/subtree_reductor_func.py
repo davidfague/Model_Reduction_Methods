@@ -437,7 +437,7 @@ def add_PP_properties_to_dict(PP, PP_params_dict):
                       }
     PP_params = []
     for param in dir(PP):
-        if param.startswith("__") or param in skipped_params:
+        if param.startswith("__") or param in skipped_params or callable(getattr(PP, param)):
             continue
         PP_params.append(param)
     PP_params_dict[type_of_point_process(PP)] = PP_params
