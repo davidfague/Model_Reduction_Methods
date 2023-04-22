@@ -368,7 +368,7 @@ def expand_cable(section_to_expand, frequency, furcation_x, nbranch):
     branch_diam_in_micron = branch_diam * 10000  # Convert branch diameter from cm to microns
     branch_space_const_in_cm = find_space_const_in_cm(branch_diam_in_micron, rm, ra)
     branch_space_const_in_micron = 10000 * branch_space_const_in_cm
-    branch_L = branch_elec_L * branch_space_const_in_micronon
+    branch_L = branch_elec_L * branch_space_const_in_micron
     
     # calculate the other parameters for each branch
     trunk_diam_in_cm = trunk_diam/10000
