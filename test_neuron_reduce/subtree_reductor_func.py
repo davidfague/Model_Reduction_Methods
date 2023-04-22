@@ -238,10 +238,11 @@ def create_segments_to_mech_vals(sections_to_delete,
 
                 if not n.endswith('_' + mech_name) and not mech_name.endswith('_ion'):
                     n += '_' + mech_name
-                  
+                    
                 segment_to_mech_vals[seg][mech_name][n] = getattr(seg, n)
                 mech_names.add(mech_name)
-
+                
+#    print(segment_to_mech_vals)
     mech_names -= exclude
 
     if remove_mechs:  # Remove all the mechs from the sections
@@ -435,13 +436,23 @@ def add_PP_properties_to_dict(PP, PP_params_dict):
     '''
     skipped_params = {"Section", "allsec", "baseattr", "cas", "g", "get_loc", "has_loc", "hname",
                       'hocobjptr', "i", "loc", "next", "ref", "same", "setpointer", "state",
-                      "get_segment", "DA1", "eta", "omega", "DA2", "NEn", "NE2", "GAP1", "unirand", "randGen", "sfunc", "erand"
-                      }
+                      "get_segment", "DA1", "eta", "omega", "DA2", "NEn", "NE2", "GAP1", "unirand", "randGen", "sfunc", "erand", 
+                      "randObjPtr", "A_AMPA", "A_NMDA", "B_AMPA", "B_NMDA", "D1", "D2", "F", "P", "W_nmda", "facfactor", "g_AMPA", "g_NMDA", "iampa", "inmda", "on_ampa", "on_nmda", "random",  "thr_rp",
+                      
+                      } # last line was considered syn_params but was not changed
+                      
+                      # considering moving bc values seem unchaged from default: "Erev_ampa', 'Erev_nmda', 'gbar_ampa', 'gbar_nmda', 'tau_d_AMPA', 'tau_d_NMDA', 'tau_r_AMPA', 'tau_r_NMDA'
+                      
+    syn_params_list = {    'tau_r_AMPA',     'tau_d_AMPA',     'tau_r_NMDA',     'tau_d_NMDA',     'Use',     'Dep',     'Fac',     'e',     'u0',     'initW',     'taun1',     'taun2',     'gNMDAmax',     'enmda',     'taua1',     'taua2',     'gAMPAmax',     'eampa',     'AlphaTmax_ampa',     'Beta_ampa',     'Cdur_ampa',     'gbar_ampa',     'Erev_ampa',     'AlphaTmax_nmda',     'Beta_nmda',     'Cdur_nmda',     'gbar_nmda',     'Erev_nmda',     'initW_random',     'Wmax',     'Wmin',     'lambda1',     'lambda2',     'threshold1',     'threshold2', 'tauD1', 'tauD2', 'f','tauF','P_0','d1', 'd2'}
     PP_params = []
     for param in dir(PP):
-        if (param.startswith("__")) or (param in skipped_params) or (callable(getattr(PP, param))):
+        if ((param.startswith("__")) or (callable(getattr(PP, param))) or (param in skipped_params)):
             continue
-        PP_params.append(param)
+        if param in syn_params_list:
+          PP_params.append(param)
+        else:
+          print(param, 'added to skipped synapse params')
+          skipped_params.add(param)
     PP_params_dict[type_of_point_process(PP)] = PP_params
 
 
@@ -921,6 +932,37 @@ class Neuron(object):
 
 def load_default_model():
     h('''begintemplate model
+
+public init, biophys, geom_nseg, delete_axon, finish_creating_model_after_loading_morphology
+
+public soma, dend, apic, axon  // sections
+public all, somatic, apical, axonal, basal // section lists
+objref all, somatic, apical, axonal, basal, this
+
+proc init() {
+    all = new SectionList()
+    somatic = new SectionList()
+    basal = new SectionList()
+    apical = new SectionList()
+    axonal = new SectionList()
+
+    forall delete_section()
+    StepDist = 60 // human cells have no spines in their first 60 um
+                                // from soma - see Benavides-Piccione 2013
+    F_Spines = 1.9       //As calculated - see detailes in Eyal 2015
+
+    CM =0.45	// uF/cm2
+    RM = 38907
+    RA = 203
+    E_PAS =  -86
+
+}
+
+create soma[1], dend[1], apic[1], axon[1]
+
+//external lambda_f
+proc geom_nseg() {
+    soma distance()
 
 public init, biophys, geom_nseg, delete_axon, finish_creating_model_after_loading_morphology
 
