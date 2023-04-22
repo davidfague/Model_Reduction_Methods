@@ -435,7 +435,7 @@ def create_dendritic_cell(soma_cable, has_apical, original_cell, model_obj_name,
         # Create the trunk section
         trunk_index = sec_type_counts[sec_type]
         sec_type_counts[sec_type] += 1
-        apply_params_to_section(f"{sec_type}[{trunk_index}
+        apply_params_to_section(f"{sec_type}[{trunk_index}]", "basal", "reduced_dendritic_cell", basals[trunk_index], trunk_cable_params, trunk_nseg)
     return cell, basals, apicals, trunk_sec_type_list_indices, trunks, branches, all_expanded_sections, number_of_sections_in_apical_list,number_of_sections_in_basal_list, number_of_sections_in_axonal_list
 
 def find_and_disconnect_sections_to_keep(soma,sections_to_expand):
