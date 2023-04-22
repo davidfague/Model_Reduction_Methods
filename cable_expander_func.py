@@ -384,7 +384,7 @@ def expand_cable(section_to_expand, frequency, furcation_x, nbranch):
     branch_params = CableParams(length=branch_L, diam=branch_diam_in_micron, space_const=branch_space_const_in_micron,
                                 cm=cm, rm=rm, ra=ra, e_pas=e_pas, electrotonic_length=branch_elec_L,
                                 type=sec_type, furcation_x=furcation_x)
-    print('branch_L:',branch_L,'|branch_diam:',branch_diam,'|trunk_L:',trunk_L,'|trunk_diam:',trunk_diam)
+    print('branch_L:',branch_L,'|branch_diam:',branch_diam_in_micron,'|trunk_L:',trunk_L,'|trunk_diam:',trunk_diam)
     return trunk_params, branch_params, sec_type   
 def create_dendritic_cell(soma_cable,
                         has_apical,
