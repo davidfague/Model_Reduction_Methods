@@ -6,13 +6,14 @@ import math
 import re
 import cmath
 from decimal import Decimal
-
+import datetime
 import numpy as np
 import neuron
 from neuron import h
-from neuron_reduce.subtree_reductor_func import (load_model, gather_subtrees, mark_subtree_sections_with_subtree_index, create_segments_to_mech_vals, 
+#if change neuron_reduce function in test folder it will not update here... need to figure out how to import from test_neuron_reduce
+from test_neuron_reduce.subtree_reductor_func import (load_model, gather_subtrees, mark_subtree_sections_with_subtree_index, create_segments_to_mech_vals, 
                                                  calculate_nsegs_from_lambda, create_sections_in_hoc, append_to_section_lists, calculate_subtree_q,
-                                                 type_of_point_process,synapse_properties_match,textify_seg_to_seg, add_PP_properties_to_dict,
+                                                 type_of_point_process,synapse_properties_match,textify_seg_to_seg,
                                                  Neuron)
 from neuron_reduce.reducing_methods import (_get_subtree_biophysical_properties, measure_input_impedance_of_subtree, find_lowest_subtree_impedance, 
                                             find_space_const_in_cm, push_section, find_best_real_X)
@@ -133,6 +134,7 @@ def cable_expander(original_cell,
         h.disconnect(sec=section_to_expand)
 
     # expanding the subtrees
+    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"Branching the section using (d)3/2 and electrotonic length rule to preserve service area and electrical properties.")
     all_trunk_properties=[] #list of all trunk cable properties
     all_branch_properties=[] #list of all branch cable properties
     all_trunk_types=[]
@@ -143,6 +145,7 @@ def cable_expander(original_cell,
       all_trunk_types.append(trunk_type)
     trunk_nsegs = calculate_nsegs_from_lambda(all_trunk_properties)
     branch_nsegs = calculate_nsegs_from_lambda(all_branch_properties)
+    
 
     # trunk_properties,branch_properties = [expand_cable(sections_to_expand[i], reduction_frequency, furcations_x, nbranches)
     #                         for i in sections_to_expand]
@@ -168,7 +171,6 @@ def cable_expander(original_cell,
     #             new_cables_nsegs = calculate_nsegs_from_manual_arg(new_cable_properties,
     #                                                                min_reduced_seg_n)
                 
-
     cell, basals, apicals, trunk_sec_type_list_indices, trunks, branches, all_expanded_sections,number_of_sections_in_apical_list,number_of_sections_in_basal_list, number_of_sections_in_axonal_list = create_dendritic_cell(soma_cable,
                                                                                 has_apical,
                                                                                 original_cell,
@@ -180,6 +182,8 @@ def cable_expander(original_cell,
     
 
     syn_to_netcon = get_syn_to_netcons(netcons_list) # dictionary mapping netcons to their synapse
+    
+    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"Spreading synapses onto branches")
     
     new_synapses_list, subtree_ind_to_q = adjust_new_tree_synapses(
         num_of_subtrees,roots_of_subtrees,
@@ -195,7 +199,9 @@ def cable_expander(original_cell,
         basals, apicals,
         cell,
         reduction_frequency)
-#     #print("PP_params_dict",PP_params_dict)
+    for synapse,params in PP_params_dict.items():
+      print(synapse,params)
+
 #     #check synapses_list with netcons_list
 #     for netcon in netcons_list:
 #       syn=netcon.syn()
@@ -203,9 +209,11 @@ def cable_expander(original_cell,
 #         print(syn, netcon)
 
     syn_to_netcon = get_syn_to_netcons(netcons_list) # dictionary mapping netcons to their synapse # re call to account for changes.. may need to adjust for efficiency
+    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"duplicating branch 1 synapses onto the and randomly distributing Netcons")
     new_synapses_list=distribute_branch_synapses(branches,netcons_list,new_synapses_list,PP_params_dict,syn_to_netcon) #adjust synapses
     
     # create segment to segment mapping
+    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"Mapping segments")
     original_seg_to_reduced_seg, reduced_seg_to_original_seg, = create_seg_to_seg(
         original_cell,
         section_per_subtree_index,
@@ -221,6 +229,7 @@ def cable_expander(original_cell,
         trunks, branches)
 
     # copy active mechanisms
+    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"Mapping mechanisms")
     copy_dendritic_mech(original_seg_to_reduced_seg,
                         reduced_seg_to_original_seg,
                         apicals,
@@ -238,7 +247,8 @@ def cable_expander(original_cell,
             soma.connect(sec)
         else:
             sections_to_keep[i].connect(soma, soma_sections_to_keep_x[i])
-
+            
+    print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"Deleting original model sections")
     # Now we delete the original model sections
     for section in sections_to_expand:
         with push_section(section):
@@ -1073,10 +1083,18 @@ def duplicate_synapse(synapse,PP_params_dict):
     syn_type = synapse.hname().split('[')[0]  # Remove index from syn_type
     new_synapse = eval('h.'+syn_type)(seg)
             # extract the parameters using hoc instead of PyNeuronToolbox
+    params_were_same=[]
     for param_name in PP_params_dict[syn_type]:
             param_value = getattr(synapse, param_name)
-            try:setattr(new_synapse, param_name, param_value)
-            except: raise AttributeError('Cannot set',new_synapse,'attribute',param_name,'to',param_value,'may try including attribute in skipped_params for PP_params_dict')
+            if getattr(new_synapse, param_name) != param_value:
+              if param_name in params_were_same:
+                print("Keep",param_name)
+              try:setattr(new_synapse, param_name, param_value)
+              except: raise AttributeError('Cannot set',new_synapse,'attribute',param_name,'to',param_value,'may try including attribute in skipped_params for PP_params_dict')
+            else:
+              if param_name not in params_were_same:
+                params_were_same.append(param_name)
+                print("consider excluding PP_params:",param_name) #debugging for efficiency
     return new_synapse
            
 
@@ -1101,4 +1119,31 @@ def redistribute_netcons(synapse,target_synapses,syn_to_netcon):
         continue
       else:
         netcon.setpost(target_synapses[rand_index-1]) #find corresponding synapse #point netcon toward synapse
-
+        
+        
+def add_PP_properties_to_dict(PP, PP_params_dict):
+    '''
+    add the propeties of a point process to PP_params_dict.
+    The only propeties added to the dictionary are those worth comparing
+    ************may need to edit skipped params to include functions from new synapse mod files***********
+    '''
+    skipped_params = {"Section", "allsec", "baseattr", "cas", "g", "get_loc", "has_loc", "hname",
+                      'hocobjptr', "i", "loc", "next", "ref", "same", "setpointer", "state",
+                      "get_segment", "DA1", "eta", "omega", "DA2", "NEn", "NE2", "GAP1", "unirand", "randGen", "sfunc", "erand", 
+                      "randObjPtr", "A_AMPA", "A_NMDA", "B_AMPA", "B_NMDA", "D1", "D2", "F", "P", "W_nmda", "facfactor", "g_AMPA", "g_NMDA", "iampa", "inmda", "on_ampa", "on_nmda", "random",  "thr_rp",
+                      
+                      } # last line was considered syn_params but was not changed
+                      
+                      # considering moving bc values seem unchaged from default: "Erev_ampa', 'Erev_nmda', 'gbar_ampa', 'gbar_nmda', 'tau_d_AMPA', 'tau_d_NMDA', 'tau_r_AMPA', 'tau_r_NMDA'
+                      
+    syn_params_list = {    'tau_r_AMPA',     'tau_d_AMPA',     'tau_r_NMDA',     'tau_d_NMDA',     'Use',     'Dep',     'Fac',     'e',     'u0',     'initW',     'taun1',     'taun2',     'gNMDAmax',     'enmda',     'taua1',     'taua2',     'gAMPAmax',     'eampa',     'AlphaTmax_ampa',     'Beta_ampa',     'Cdur_ampa',     'gbar_ampa',     'Erev_ampa',     'AlphaTmax_nmda',     'Beta_nmda',     'Cdur_nmda',     'gbar_nmda',     'Erev_nmda',     'initW_random',     'Wmax',     'Wmin',     'lambda1',     'lambda2',     'threshold1',     'threshold2', 'tauD1', 'tauD2', 'f','tauF','P_0','d1', 'd2'}
+    PP_params = []
+    for param in dir(PP):
+        if ((param.startswith("__")) or (callable(getattr(PP, param))) or (param in skipped_params)):
+            continue
+        if param in syn_params_list:
+          PP_params.append(param)
+        else:
+          print(param, 'added to skipped synapse params')
+          skipped_params.add(param)
+    PP_params_dict[type_of_point_process(PP)] = PP_params
