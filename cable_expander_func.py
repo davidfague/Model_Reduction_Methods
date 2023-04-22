@@ -130,6 +130,7 @@ def cable_expander(original_cell,
     # disconnects all the sections_to_expand from the soma
     subtrees_xs = []
     for section_to_expand in sections_to_expand:
+        subtrees_xs.append(section_to_expand.parentseg().x)
         h.disconnect(sec=section_to_expand)
 
     # expanding the subtrees
