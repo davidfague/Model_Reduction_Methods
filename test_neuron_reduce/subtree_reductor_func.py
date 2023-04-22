@@ -429,31 +429,31 @@ def handle_orphan_segments(original_seg_to_reduced_seg,
 
 
 def add_PP_properties_to_dict(PP, PP_params_dict):
-    '''
-    add the propeties of a point process to PP_params_dict.
-    The only propeties added to the dictionary are those worth comparing
-    ************may need to edit skipped params to include functions from new synapse mod files***********
-    '''
-    skipped_params = {"Section", "allsec", "baseattr", "cas", "g", "get_loc", "has_loc", "hname",
-                      'hocobjptr', "i", "loc", "next", "ref", "same", "setpointer", "state",
-                      "get_segment", "DA1", "eta", "omega", "DA2", "NEn", "NE2", "GAP1", "unirand", "randGen", "sfunc", "erand", 
-                      "randObjPtr", "A_AMPA", "A_NMDA", "B_AMPA", "B_NMDA", "D1", "D2", "F", "P", "W_nmda", "facfactor", "g_AMPA", "g_NMDA", "iampa", "inmda", "on_ampa", "on_nmda", "random",  "thr_rp",
-                      
-                      } # last line was considered syn_params but was not changed
-                      
-                      # considering moving bc values seem unchaged from default: "Erev_ampa', 'Erev_nmda', 'gbar_ampa', 'gbar_nmda', 'tau_d_AMPA', 'tau_d_NMDA', 'tau_r_AMPA', 'tau_r_NMDA'
-                      
-    syn_params_list = {    'tau_r_AMPA',     'tau_d_AMPA',     'tau_r_NMDA',     'tau_d_NMDA',     'Use',     'Dep',     'Fac',     'e',     'u0',     'initW',     'taun1',     'taun2',     'gNMDAmax',     'enmda',     'taua1',     'taua2',     'gAMPAmax',     'eampa',     'AlphaTmax_ampa',     'Beta_ampa',     'Cdur_ampa',     'gbar_ampa',     'Erev_ampa',     'AlphaTmax_nmda',     'Beta_nmda',     'Cdur_nmda',     'gbar_nmda',     'Erev_nmda',     'initW_random',     'Wmax',     'Wmin',     'lambda1',     'lambda2',     'threshold1',     'threshold2', 'tauD1', 'tauD2', 'f','tauF','P_0','d1', 'd2'}
-    PP_params = []
-    for param in dir(PP):
-        if ((param.startswith("__")) or (callable(getattr(PP, param))) or (param in skipped_params)):
-            continue
-        if param in syn_params_list:
-          PP_params.append(param)
-        else:
-          print(param, 'added to skipped synapse params')
-          skipped_params.add(param)
-    PP_params_dict[type_of_point_process(PP)] = PP_params
+    """
+    add the properties of a point process to PP_params_dict.
+    The only properties added to the dictionary are those worth comparing
+    attributes not worth comparing are not synapse properties or do not differ in value.
+    """
+    skipped_params = {
+        "Section", "allsec", "baseattr", "cas", "g", "get_loc", "has_loc", "hname",
+        'hocobjptr', "i", "loc", "next", "ref", "same", "setpointer", "state",
+        "get_segment", "DA1", "eta", "omega", "DA2", "NEn", "NE2", "GAP1", "unirand", "randGen", "sfunc", "erand", 
+        "randObjPtr", "A_AMPA", "A_NMDA", "B_AMPA", "B_NMDA", "D1", "D2", "F", "P", "W_nmda", "facfactor", "g_AMPA", "g_NMDA", "iampa", "inmda", "on_ampa", "on_nmda", "random",  "thr_rp","AlphaTmax_gaba", "Beta_gaba", "Cainf", "Cdur_gaba", "Erev_gaba", "ICag", "Icatotal", "P0g", "W", "capoolcon", "destid", "fCag", "fmax", "fmin", "g_gaba", "gbar_gaba", "igaba", "limitW", "maxChange", "neuroM", "normW", "on_gaba", "pooldiam", "postgid", "pregid", "r_gaba", "r_nmda", "scaleW", "srcid", "tauCa", "type", "z",
+        "d1", "gbar_ampa", "gbar_nmda","tau_d_AMPA","tau_d_NMDA","tau_r_AMPA","tau_r_NMDA","Erev_ampa","Erev_nmda", "lambda1", "lambda2", "threshold1", "threshold2",
+    }
+
+    syn_params_list = {
+        "tau_r_AMPA", "tau_r_NMDA", "Use", "Dep", "Fac", "e", "u0", "initW", "taun1", "taun2", "gNMDAmax", "enmda", "taua1", "taua2", "gAMPAmax", "eampa", "AlphaTmax_ampa", "Beta_ampa", "Cdur_ampa", "AlphaTmax_nmda", "Beta_nmda", "Cdur_nmda", "initW_random", "Wmax", "Wmin", "tauD1", "tauD2", "f", "tauF", "P_0", "d2",
+    }
+
+    PP_params = [param for param in dir(PP) if not (param.startswith("__") or callable(getattr(PP, param)))]
+
+    PP_params = list(filter(lambda x: x not in skipped_params, PP_params))
+
+    syn_params = list(filter(lambda x: x in syn_params_list, PP_params))
+
+
+    PP_params_dict[type_of_point_process(PP)] = syn_params
 
 
 def type_of_point_process(PP):
