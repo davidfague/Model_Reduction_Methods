@@ -344,87 +344,47 @@ def apply_params_to_section(name, type_of_sectionlist, instance_as_str, section,
     
 def expand_cable(section_to_expand, frequency, furcation_x, nbranch):
     '''expand a cylinder (cable) from the reduced_cell into one trunk and nbranch identical branch sections.
-    The expansion is done by finding the lengths and diameters of the trunk and branch.
+    The expansion is done by finding cable parameters of the trunk and branch.
     Trunk length is chosen using the furcation point.
     Trunk diameter is the same as the cable.
-    Branch Diameter is chosen using the 3/2 power rule.
+    Branch Diameter is chosen by solving using the 3/2 power rule. (d_trunk)3/2=((d_branch)3/2)/nbranch
     Branch length is chosen so that electrotonic length of the dendritic tree is the same as the cable's electrotonic length.
+    Ra and Ri are kept the same.
     '''
-
-    section_to_expand_ref = h.SectionRef(sec=section_to_expand)
-    sec_type=section_to_expand.name().split(".")[1][:4] #get section type
-    cm, rm, ra, e_pas, q = _get_subtree_biophysical_properties(section_to_expand_ref, frequency)
-
-    # finds the subtree's input impedance (at the somatic-proximal end of the
-    # subtree root section) and the lowest transfer impedance in the subtree in
-    # relation to the somatic-proximal end (see more in Readme on NeuroReduce)
-    imp_obj, root_input_impedance = measure_input_impedance_of_subtree(section_to_expand, frequency)
-
-    # in Ohms (a complex number)
-    curr_lowest_subtree_imp = find_lowest_subtree_impedance(section_to_expand_ref, imp_obj)
-
-    # expanding the single cylinder into one trunk and multiple tufts
+    # calculate the electrotonic length of the cable
+    cable_space_const_in_cm = find_space_const_in_cm(section_to_expand(0.5).diam/10000, rm, ra)
+    cable_elec_L = section_to_expand.L/cable_space_const_in_cm
+    
+    # calculate the diameter of each branch
     trunk_diam = section_to_expand.diam
-    trunk_diam_in_cm=trunk_diam/10000
+    branch_diam = (trunk_diam**(3/2)/nbranch)**(2/3)
+    branch_diam_in_cm = branch_diam/10000
+    
+    # calculate the electrotonic length of each branch
+    trunk_elec_L = furcation_x * cable_elec_L
+    branch_elec_L = cable_elec_L - trunk_elec_L
+    branch_space_const_in_cm = find_space_const_in_cm(branch_diam_in_cm, rm, ra)
+    branch_space_const_in_micron = 10000 * branch_space_const_in_cm
+    branch_L = branch_elec_L * branch_space_const_in_micron
+    
+    # calculate the other parameters for each branch
+    trunk_diam_in_cm = trunk_diam/10000
     trunk_Ri = section_to_expand.Ra
     trunk_Rm = 1/section_to_expand(0.5).pas.g
-    trunk_L = section_to_expand.L*furcation_x #since trunk has same Ri,Rm,d electrotonically the same as cable
-
-
-    branch_diam=(trunk_diam**(3/2)/nbranch)**(2/3) # d(3/2) power rule. solving trunk_d^(3/2)=sum(branch_diam^3/2) for branch diam
-    branch_diam_in_cm = branch_diam/10000
-    branch_Ri=trunk_Ri
-    branch_Rm=trunk_Rm
+    trunk_L = section_to_expand.L*furcation_x
+    sec_type = section_to_expand.name().split(".")[1][:4]
+    cm, rm, ra, e_pas, q = _get_subtree_biophysical_properties(h.SectionRef(sec=section_to_expand), frequency)
     
-    cable_space_const_in_cm = find_space_const_in_cm(section_to_expand(0.5).diam/10000,
-                                                    rm,
-                                                    ra)
-    cable_space_const_in_um=cable_space_const_in_cm*10000
-    # solving cable_elec_L = dend_elec_L = trunk_elec_L + branch_elec_L for branch electrotonic length for one order of branching
-    cable_elec_L = section_to_expand.L/cable_space_const_in_um
-    trunk_elec_L = trunk_L*cable_elec_L/section_to_expand_ref.sec.L
-    branch_elec_L = cable_elec_L-trunk_elec_L
-    # solving elec_L=Length/sqrt((Rm/Ri)*(d/4)) for Length
-    # branch_L = branch_elec_L*np.sqrt((branch_Rm/branch_Ri)*(branch_diam_in_cm/4))
-    # branch_L=branch_L*10000
-
-
-    # calculating the space constant, in order to find the cylinder's length:
-    # space_const = sqrt(rm/(ri+r0))
-    trunk_space_const_in_cm = find_space_const_in_cm(trunk_diam_in_cm,
-                                                    rm,
-                                                    ra)
-    trunk_space_const_in_micron = 10000 * trunk_space_const_in_cm
-
-    branch_space_const_in_cm = find_space_const_in_cm(branch_diam_in_cm,
-                                                    rm,
-                                                    ra)
-    branch_space_const_in_micron = 10000 * branch_space_const_in_cm
+    # create CableParams objects for the trunk and branch
+    trunk_params = CableParams(length=trunk_L, diam=trunk_diam, space_const=cable_space_const_in_cm*10000,
+                               cm=cm, rm=rm, ra=ra, e_pas=e_pas, electrotonic_length=trunk_elec_L,
+                               type=sec_type, furcation_x=furcation_x)
     
-    branch_L=branch_elec_L*branch_space_const_in_micron
-    
-    print('trunk_diam:',trunk_diam,'|trunk_length:',trunk_L,'|branch_diam:',branch_diam,'|branch_length:',branch_L)
-    # len(CableParams)
+    branch_params = CableParams(length=branch_L, diam=branch_diam, space_const=branch_space_const_in_micron,
+                                cm=cm, rm=rm, ra=ra, e_pas=e_pas, electrotonic_length=branch_elec_L,
+                                type=sec_type, furcation_x=furcation_x)
 
-    return CableParams(length=trunk_L,
-                       diam=trunk_diam,
-                       space_const=trunk_space_const_in_micron,
-                       cm=cm,
-                       rm=rm,
-                       ra=ra,
-                       e_pas=e_pas,
-                       electrotonic_length=trunk_elec_L,
-                       type=sec_type,
-                       furcation_x=furcation_x),CableParams(length=branch_L,
-                       diam=branch_diam,
-                       space_const=branch_space_const_in_micron,
-                       cm=cm,
-                       rm=rm,
-                       ra=ra,
-                       e_pas=e_pas,
-                       electrotonic_length=branch_elec_L,
-                       type=sec_type,
-                       furcation_x=furcation_x),sec_type    
+    return trunk_params, branch_params, sec_type   
 def create_dendritic_cell(soma_cable,
                         has_apical,
                         original_cell,
