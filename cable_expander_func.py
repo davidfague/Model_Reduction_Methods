@@ -445,8 +445,10 @@ def create_dendritic_cell(soma_cable,
             apicals = [h.reduced_dendritic_cell.apic[i] for i in range(num_sec_type_for_this_unique_sec_type)]
         elif unique_sec_type == 'dend':
             basals = [h.reduced_dendritic_cell.dend[i] for i in range(num_sec_type_for_this_unique_sec_type)]
+        elif unique_sec_type == 'axon':
+            axonal = [h.reduced_dendritic_cell.axon[i] for i in range(num_sec_type_for_this_unique_sec_type)]
         else:
-            raise ValueError('Section type {} is not "apic" or "dend"'.format(unique_sec_type))
+            raise ValueError('Section type {} is not "apic", "dend", or "axon"'.format(unique_sec_type))
 
     # assemble tree sections
     number_of_sections_in_apical_list = 0  # count as we add sections since cannot do len(h.reduced_cell.apical)
