@@ -139,7 +139,7 @@ def cable_expander(original_cell,
     all_branch_properties=[] #list of all branch cable properties
     all_trunk_types=[]
     for i,sec in enumerate(sections_to_expand):
-      trunk_properties,branch_properties,trunk_type=expand_cable(sections_to_expand[i], reduction_frequency, furcations_x[i], nbranches[i])
+      trunk_properties,branch_properties,trunk_type=expand_cable(sec, reduction_frequency, furcations_x[i], nbranches[i])
       all_trunk_properties.append(trunk_properties)
       all_branch_properties.append(branch_properties)
       all_trunk_types.append(trunk_type)
@@ -384,7 +384,7 @@ def expand_cable(section_to_expand, frequency, furcation_x, nbranch):
     branch_params = CableParams(length=branch_L, diam=branch_diam, space_const=branch_space_const_in_micron,
                                 cm=cm, rm=rm, ra=ra, e_pas=e_pas, electrotonic_length=branch_elec_L,
                                 type=sec_type, furcation_x=furcation_x)
-
+    print('branch_L:',branch_L,'|branch_diam:',branch_diam,'|trunk_L:',trunk_L,'|trunk_diam:',trunk_diam)
     return trunk_params, branch_params, sec_type   
 def create_dendritic_cell(soma_cable,
                         has_apical,
