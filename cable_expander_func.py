@@ -482,7 +482,7 @@ def create_dendritic_cell(soma_cable,
           
     return cell, basals, apicals, trunk_sec_type_list_indices, trunks, branches, all_expanded_sections, number_of_sections_in_apical_list,number_of_sections_in_basal_list, number_of_sections_in_axonal_list
 
-def add_trunk_and_branches(section_list, trunk_index, cable_params, trunk_nseg, nbranch, branch_cable_params, branch_nseg, soma, connect_loc, all_expanded_sections, number_of_sections_in_list):
+def add_trunk_and_branches(section_list, trunks, trunk_index, cable_params, trunk_nseg, nbranch, branch_cable_params, branch_nseg, soma, connect_loc, all_expanded_sections, number_of_sections_in_list):
     # create trunk section
     apply_params_to_section(section_list[0] + "[" + str(trunk_index) + "]", section_list[1], "reduced_dendritic_cell", section_list[2][trunk_index], cable_params, trunk_nseg)
     section_list[2][trunk_index].connect(soma, connect_loc, 0)
