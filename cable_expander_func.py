@@ -493,7 +493,7 @@ def add_trunk_and_branches(section_list, trunks, trunk_index, cable_params, trun
     for j in range(nbranch):
         branch_index = number_of_sections_in_list
         apply_params_to_section(section_list[0] + "[" + str(branch_index) + "]", section_list[1], "reduced_dendritic_cell", section_list[2][branch_index], branch_cable_params, branch_nseg)
-        section_list[2][branch_index].connect(section_list[2][trunk_index], 1, 0)
+        section_list[2][branch_index].connect(section_list[2][trunk_index], 1, 1) # connect branches to distal end of the trunk
         number_of_sections_in_list += 1
         branches_for_trunk.append(section_list[2][branch_index])
         all_expanded_sections.append(section_list[2][branch_index])
