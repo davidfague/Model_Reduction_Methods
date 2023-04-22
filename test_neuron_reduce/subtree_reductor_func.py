@@ -964,37 +964,6 @@ create soma[1], dend[1], apic[1], axon[1]
 proc geom_nseg() {
     soma distance()
 
-public init, biophys, geom_nseg, delete_axon, finish_creating_model_after_loading_morphology
-
-public soma, dend, apic, axon  // sections
-public all, somatic, apical, axonal, basal // section lists
-objref all, somatic, apical, axonal, basal, this
-
-proc init() {
-    all = new SectionList()
-    somatic = new SectionList()
-    basal = new SectionList()
-    apical = new SectionList()
-    axonal = new SectionList()
-
-    forall delete_section()
-    StepDist = 60 // human cells have no spines in their first 60 um
-                                // from soma - see Benavides-Piccione 2013
-    F_Spines = 1.9       //As calculated - see detailes in Eyal 2015
-
-    CM =0.45	// uF/cm2
-    RM = 38907
-    RA = 203
-    E_PAS =  -86
-
-}
-
-create soma[1], dend[1], apic[1], axon[1]
-
-//external lambda_f
-proc geom_nseg() {
-    soma distance()
-
     forsec all {
         RA_calc = RA
         RM_calc = RM*F_Spines
@@ -1047,3 +1016,4 @@ proc complete_full_model_creation() {
 }
 
 endtemplate model''')
+
