@@ -365,6 +365,7 @@ def expand_cable(section_to_expand, frequency, furcation_x, nbranch):
     # calculate the electrotonic length of each branch
     trunk_elec_L = furcation_x * cable_elec_L
     branch_elec_L = cable_elec_L - trunk_elec_L
+    print(branch_elec_L)
     branch_space_const_in_cm = find_space_const_in_cm(branch_diam_in_cm, rm, ra)  # Convert back to cm
     branch_space_const_in_micron = 10000 * branch_space_const_in_cm
     branch_L = branch_elec_L * branch_space_const_in_micron
