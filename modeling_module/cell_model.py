@@ -286,7 +286,9 @@ class cell_model():
     self.NetCon_per_seg=[0]*len(self.segments)
     self.inh_NetCon_per_seg=[0]*len(self.segments)
     self.exc_NetCon_per_seg=[0]*len(self.segments)
-
+    
+    v_rest = -60 #used to determine exc/inh may adjust or automate
+    
     #calculate number of synapses for each segment (may want to divide by segment length afterward to get synpatic density)
     for netcon in self.netcons_list:
       syn=netcon.syn()
