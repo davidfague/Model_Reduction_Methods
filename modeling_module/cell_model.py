@@ -264,7 +264,7 @@ class cell_model():
                   for i in range(psec.n3d()-1):
                       arc_length_before = psec.arc3d(i)
                       arc_length_after = psec.arc3d(i+1)
-                      if (arc_length_before/psec.L) <= pseg.x < (arc_length_after/psec.L):
+                      if (arc_length_before/psec.L) <= pseg.x <= (arc_length_after/psec.L):
                           # pseg.x is between 3d coordinates i and i+1
                           psec_x_between_coordinates = (pseg.x * psec.L - arc_length_before) / (arc_length_after - arc_length_before)
                           # calculate 3d coordinates at psec_x_between_coordinates
@@ -273,7 +273,7 @@ class cell_model():
                           x_coord = x_before + (x_after - x_before) * psec_x_between_coordinates
                           y_coord = y_before + (y_after - y_before) * psec_x_between_coordinates
                           z_coord = z_before + (z_after - z_before) * psec_x_between_coordinates
-                          pt0 = [x_coord, y_coord, z_coord]
+                          pt0 = (x_coord, y_coord, z_coord)
                           break
                   pt1 = [0., 0., 0.]
                   pt1[1] = pt0[1] + y
