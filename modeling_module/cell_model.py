@@ -41,7 +41,7 @@ class cell_model():
     self.sec_id_in_seg = []  # index of the first segment of each section in the segment list
     self.sec_angs = [] # list of angles that were used to branch the cell
     self.sec_rots = []
-    self.__generate_sec_coords()
+    self.__generate_sec_coords__old()
     self.__store_segments()
     self.__set_spike_recorder()
     self.__calc_seg_coords()
