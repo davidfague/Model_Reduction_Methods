@@ -198,7 +198,7 @@ class cell_model():
       axial = False
       parent_sections = [] # list for already seen parent_sections of this type
       for sec in section_obj_list:
-          if sec.n3d() is not None:
+          if sec.n3d() is None:
               print("Generating 3D coordinates for: ", sec)
               sec_length = sec.L
               if sec is self.soma:
@@ -214,7 +214,7 @@ class cell_model():
                   sec.pt3dadd(*pt0, sec.diam)
                   sec.pt3dadd(*pt1, sec.diam)
               else:
-                  if sec.parentseg() is not None:
+                  if sec.parentseg() is None:
                       print(sec,"is attached to None")
                       pseg = sec.parentseg()
                       psec = pseg.sec
