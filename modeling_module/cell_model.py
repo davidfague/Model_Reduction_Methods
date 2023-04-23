@@ -63,17 +63,25 @@ class cell_model():
           iseg = self.sec_id_in_seg[isec]
           nseg = sec.nseg
           pt0 = np.array([sec.x3d(0), sec.y3d(0), sec.z3d(0)])
-          pt1 = np.array([sec.x3d(1), sec.y3d(1), sec.z3d(1)])
-          pts = np.linspace(pt0, pt1, 2 * nseg + 1)
-          p0[iseg:iseg + nseg, :] = pts[:-2:2, :]
-          p1[iseg:iseg + nseg, :] = pts[2::2, :]
-          p05[iseg:iseg + nseg, :] = pts[1:-1:2, :]
-          r[iseg:iseg + nseg] = sec.diam / 2
-      self.seg_coords = {'dl': p1 - p0, 'pc': p05, 'r': r}
+          for seg in sec:
+              arc_length_before = sec.arc3d(seg.i)
+              arc_length_after = sec.arc3d(seg.i + 1)
+              seg_x_between_coordinates = (seg.x * sec.L - arc_length_before) / (arc_length_after - arc_length_before)
+              x_before, y_before, z_before = sec.x3d(seg.i), sec.y3d(seg.i), sec.z3d(seg.i)
+              x_after, y_after, z_after = sec.x3d(seg.i+1), sec.y3d(seg.i+1), sec.z3d(seg.i+1)
+              x_coord = x_before + (x_after - x_before) * seg_x_between_coordinates
+              y_coord = y_before + (y_after - y_before) * seg_x_between_coordinates
+              z_coord = z_before + (z_after - z_before) * seg_x_between_coordinates
+              pt0 = (x_before, y_before, z_before)
+              pt1 = (x_coord, y_coord, z_coord)
+              pt2 = (x_after, y_after, z_after)
+              self.seg_coords[iseg]['pt0'] = pt0
+              self.seg_coords[iseg]['pt1'] = pt1
+              self.seg_coords[iseg]['pt2'] = pt2
+              iseg += 1
 
-  def __calc_seg_coords__from_multiple_3D(self):
-      """May need adjusting
-      Calculate segment coordinates for ECP calculation"""
+ def __calc_seg_coords_orig(self):
+      """Calculate segment coordinates for ECP calculation"""
       p0 = np.empty((self._nseg, 3))
       p1 = np.empty((self._nseg, 3))
       p05 = np.empty((self._nseg, 3))
@@ -81,25 +89,15 @@ class cell_model():
       for isec, sec in enumerate(self.all):
           iseg = self.sec_id_in_seg[isec]
           nseg = sec.nseg
-          seg_length = sec.L / nseg
-          for i in range(sec.n3d()):
-              pt1 = None  # initialize pt1
-              if i == 0:
-                  pt0 = np.array([sec.x3d(i), sec.y3d(i), sec.z3d(i)])
-              elif i == sec.n3d() - 1:
-                  pt1 = np.array([sec.x3d(i), sec.y3d(i), sec.z3d(i)])
-              else:
-                  pt0 = np.array([sec.x3d(i - 1), sec.y3d(i - 1), sec.z3d(i - 1)])
-                  pt1 = np.array([sec.x3d(i), sec.y3d(i), sec.z3d(i)])
-              if pt1 is not None:  # only set pt1 if it was initialized
-                  for j in range(nseg):
-                      p0[iseg+j, :] = (pt0 + (pt1-pt0)*j/nseg + (pt1-pt0)/(2*nseg))
-                      p1[iseg+j, :] = (pt0 + (pt1-pt0)*(j+1)/nseg + (pt1-pt0)/(2*nseg))
-                      p05[iseg+j, :] = (pt0 + (pt1-pt0)*(j+0.5)/nseg)
-                      r[iseg+j] = sec.diam / 2
-          iseg += nseg
-          
+          pt0 = np.array([sec.x3d(0), sec.y3d(0), sec.z3d(0)])
+          pt1 = np.array([sec.x3d(1), sec.y3d(1), sec.z3d(1)])
+          pts = np.linspace(pt0, pt1, 2 * nseg + 1)
+          p0[iseg:iseg + nseg, :] = pts[:-2:2, :]
+          p1[iseg:iseg + nseg, :] = pts[2::2, :]
+          p05[iseg:iseg + nseg, :] = pts[1:-1:2, :]
+          r[iseg:iseg + nseg] = sec.diam / 2
       self.seg_coords = {'dl': p1 - p0, 'pc': p05, 'r': r}
+     
 
   def __store_segments(self):
     self.segments = []
