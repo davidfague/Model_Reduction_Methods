@@ -44,7 +44,7 @@ class cell_model():
     self.__generate_sec_coords()
     self.__store_segments()
     self.__set_spike_recorder()
-    self.__calc_seg_coords()
+    self.__calc_seg_coords__from_multiple_3D()
     self.__store_synapses_list() #store and record synapses from the synapses_list used to initialize the cell
     self.grp_ids = []
     if gen_geom_csv==True:
