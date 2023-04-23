@@ -63,6 +63,25 @@ class cell_model():
       for isec, sec in enumerate(self.all):
           iseg = self.sec_id_in_seg[isec]
           nseg = sec.nseg
+          pt0 = np.array([sec.x3d(0), sec.y3d(0), sec.z3d(0)])
+          pt1 = np.array([sec.x3d(1), sec.y3d(1), sec.z3d(1)])
+          pts = np.linspace(pt0, pt1, 2 * nseg + 1)
+          p0[iseg:iseg + nseg, :] = pts[:-2:2, :]
+          p1[iseg:iseg + nseg, :] = pts[2::2, :]
+          p05[iseg:iseg + nseg, :] = pts[1:-1:2, :]
+          r[iseg:iseg + nseg] = sec.diam / 2
+      self.seg_coords = {'dl': p1 - p0, 'pc': p05, 'r': r}
+
+  def __calc_seg_coords__from_multiple_3D(self):
+      """May need adjusting
+      Calculate segment coordinates for ECP calculation"""
+      p0 = np.empty((self._nseg, 3))
+      p1 = np.empty((self._nseg, 3))
+      p05 = np.empty((self._nseg, 3))
+      r = np.empty(self._nseg)
+      for isec, sec in enumerate(self.all):
+          iseg = self.sec_id_in_seg[isec]
+          nseg = sec.nseg
           seg_length = sec.L / nseg
           for i in range(sec.n3d()):
               pt1 = None  # initialize pt1
