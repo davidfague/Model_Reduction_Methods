@@ -52,7 +52,7 @@ class cell_model():
     # self.calculate_netcons_per_seg()
     self.__insert_unused_channels()
     self.__setup_recorders()
-
+    
   def __calc_seg_coords(self):
       """Calculate segment coordinates for ECP calculation"""
       self.seg_coords = {}
@@ -60,27 +60,26 @@ class cell_model():
       p1 = np.empty((self._nseg, 3))
       p05 = np.empty((self._nseg, 3))
       r = np.empty(self._nseg)
-      for isec, sec in enumerate(self.all):
+      for iseg, seg in enumerate(self.segments):
+          sec = seg.sec
           nseg = sec.nseg
-          for iseg in range(isec*nseg, (isec+1)*nseg):
-              pt0 = np.array([sec.x3d(0), sec.y3d(0), sec.z3d(0)])
-              for i in range(sec.n3d()-1):
-                  arc_length_before = sec.arc3d(i)
-                  arc_length_after = sec.arc3d(i+1)
-                  seg = sec(iseg-isec*nseg)
-                  if (arc_length_before/sec.L) <= seg.x <= (arc_length_after/sec.L):
-                      # seg.x is between 3d coordinates i and i+1
-                      seg_x_between_coordinates = (seg.x * sec.L - arc_length_before) / (arc_length_after - arc_length_before)
-                      # calculate 3d coordinates at seg_x_between_coordinates
-                      x_before, y_before, z_before = sec.x3d(i), sec.y3d(i), sec.z3d(i)
-                      x_after, y_after, z_after = sec.x3d(i+1), sec.y3d(i+1), sec.z3d(i+1)
-                      x_coord = x_before + (x_after - x_before) * seg_x_between_coordinates
-                      y_coord = y_before + (y_after - y_before) * seg_x_between_coordinates
-                      z_coord = z_before + (z_after - z_before) * seg_x_between_coordinates
-                      pt0 = (x_before, y_before, z_before)
-                      pt1 = (x_coord, y_coord, z_coord)
-                      pt2 = (x_after, y_after, z_after)
-                      self.seg_coords[iseg] = {'dl': sec.L/nseg, 'pc': pt1, 'r': seg.diam/2}
+          pt0 = np.array([sec.x3d(0), sec.y3d(0), sec.z3d(0)])
+          for i in range(sec.n3d()-1):
+              arc_length_before = sec.arc3d(i)
+              arc_length_after = sec.arc3d(i+1)
+              if (arc_length_before/sec.L) <= seg.x <= (arc_length_after/sec.L):
+                  # seg.x is between 3d coordinates i and i+1
+                  seg_x_between_coordinates = (seg.x * sec.L - arc_length_before) / (arc_length_after - arc_length_before)
+                  # calculate 3d coordinates at seg_x_between_coordinates
+                  x_before, y_before, z_before = sec.x3d(i), sec.y3d(i), sec.z3d(i)
+                  x_after, y_after, z_after = sec.x3d(i+1), sec.y3d(i+1), sec.z3d(i+1)
+                  x_coord = x_before + (x_after - x_before) * seg_x_between_coordinates
+                  y_coord = y_before + (y_after - y_before) * seg_x_between_coordinates
+                  z_coord = z_before + (z_after - z_before) * seg_x_between_coordinates
+                  pt0 = (x_before, y_before, z_before)
+                  pt1 = (x_coord, y_coord, z_coord)
+                  pt2 = (x_after, y_after, z_after)
+                  self.seg_coords[iseg] = {'dl': sec.L/nseg, 'pc': pt1, 'r': seg.diam/2}
       return self.seg_coords
     
 
