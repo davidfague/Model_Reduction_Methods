@@ -8,7 +8,7 @@ class cell_model():
   '''expanded cell model class for ECP calculation
   takes hoc cell model and does bookkeeping for analysis functions
   '''
-  def __init__(self,model,synapses_list=None,netcons_list=None,gen_3d=True,spike_threshold: Optional[float] = None):
+  def __init__(self,model,synapses_list=None,netcons_list=None,gen_3d=True,gen_geom_csv=False,spike_threshold: Optional[float] = None):
     self.all=model.all
     self.soma=model.soma
     self.apic=model.apic
@@ -38,8 +38,11 @@ class cell_model():
       self.__calc_seg_coords()
     self.__store_synapses_list() #store and record synapses from the synapses_list used to initialize the cell
     self.grp_ids = []
-    self.generate_geometry_file()
+    if gen_geom_csv==True:
+      self.generate_geometry_file()
     self.calculate_netcons_per_seg()
+    self.insert_unused_channels()
+    self.setup_recorders()
 
   def __calc_seg_coords(self):
     """Calculate segment coordinates for ECP calculation"""
@@ -227,7 +230,8 @@ class cell_model():
     df['type']=types
     df['L']=Ls
     df['R']=Rs
-    df['ang']=angs
+    try:df['ang']=angs
+    except:pass
     df['rot']=rots
     # df['axials']=axials # may need to fix
     # df['nbranch']=nbranchs # may need to fix
@@ -309,3 +313,36 @@ class cell_model():
       else:
         print("Warning: potentially deleted synapse:","|NetCon obj:",netcon,"|Synapse obj:",syn,"the NetCon's synapse is not in synapses_list. Check corresponding original cell's NetCon for location, etc.")
 
+  def insert_unused_channels(self):
+      channels = [('NaTa_t', 'gNaTa_t_NaTa_t', 'gNaTa_tbar'),
+                  ('Ca_LVAst', 'ica_Ca_LVAst', 'gCa_LVAstbar'),
+                  ('Ca_HVA', 'ica_Ca_HVA', 'gCa_HVAbar'),
+                  ('Ih', 'ihcn_Ih', 'gIhbar')]
+      for channel, attr, conductance in channels:
+          for sec in self.all:
+              if not hasattr(sec(0.5), attr):
+                  sec.insert(channel)
+                  for seg in sec:
+                      setattr(getattr(seg, channel), conductance, 0)
+                  # print(channel, sec) # empty sections
+
+  def setup_recorders(self):
+      self.gNaTa_T = Recorder(obj_list=self.segments, var_name='gNaTa_t_NaTa_t')
+      self.ina = Recorder(obj_list=self.segments, var_name='ina_NaTa_t')
+      self.ical = Recorder(obj_list=self.segments, var_name='ica_Ca_LVAst')
+      self.icah = Recorder(obj_list=self.segments, var_name='ica_Ca_HVA')
+      self.ih = Recorder(obj_list=self.segments, var_name='ihcn_Ih')
+      self.Vm = Recorder(obj_list=self.segments)
+
+  def __get_recorder_data(self):
+    '''
+    Method for getting data after simulation
+    '''
+    self.data_dict = {}
+    self.data_dict['ih_data'] = self.ih.as_numpy()
+    self.data_dict['gNaTa_T_data'] = self.gNaTa_T.as_numpy()
+    self.data_dict['ina_data'] = self.ina.as_numpy()
+    self.data_dict['icah_data'] = self.icah.as_numpy()
+    self.data_dict['ical_data'] = self.ical.as_numpy()
+    self.data_dict['Vm'] = self.Vm.as_numpy()
+    return self.data_dict
