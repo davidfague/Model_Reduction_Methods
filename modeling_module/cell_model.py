@@ -80,7 +80,7 @@ class cell_model():
               self.seg_coords[iseg]['pt2'] = pt2
               iseg += 1
 
- def __calc_seg_coords_orig(self):
+  def __calc_seg_coords_orig(self):
       """Calculate segment coordinates for ECP calculation"""
       p0 = np.empty((self._nseg, 3))
       p1 = np.empty((self._nseg, 3))
