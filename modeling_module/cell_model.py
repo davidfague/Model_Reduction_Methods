@@ -55,6 +55,7 @@ class cell_model():
 
   def __calc_seg_coords(self):
       """Calculate segment coordinates for ECP calculation"""
+      self.seg_coords = {}
       p0 = np.empty((self._nseg, 3))
       p1 = np.empty((self._nseg, 3))
       p05 = np.empty((self._nseg, 3))
@@ -79,12 +80,10 @@ class cell_model():
                       pt0 = (x_before, y_before, z_before)
                       pt1 = (x_coord, y_coord, z_coord)
                       pt2 = (x_after, y_after, z_after)
-                      self.seg_coords[iseg]['pt0'] = pt0
-                      self.seg_coords[iseg]['pt1'] = pt1
-                      self.seg_coords[iseg]['pt2'] = pt2
+                      self.seg_coords[iseg]['dl'] = sec.L/nseg
+                      self.seg_coords[iseg]['pc'] = pt1
+                      self.seg_coords[iseg]['r'] = seg.diam/2
                       iseg += 1
-          r[iseg-nseg:iseg] = sec.diam / 2
-      self.seg_coords = {'dl': p1 - p0, 'pc': p05, 'r': r}
     
 
   def __calc_seg_coords_orig(self):
