@@ -214,8 +214,7 @@ class cell_model():
                   sec.pt3dadd(*pt0, sec.diam)
                   sec.pt3dadd(*pt1, sec.diam)
               else:
-                  if sec.parentseg() is None:
-                      print(sec,"is attached to None")
+                  if sec.parentseg() is not None:
                       pseg = sec.parentseg()
                       psec = pseg.sec
                       if (psec in self.apic) and (psec is not self.apic[0]): # branch
@@ -223,6 +222,7 @@ class cell_model():
                       else:
                           nbranch = 1
                   else:
+                      print(sec,"is attached to None")
                       psec = None # may need to provide more implementation in the case of no 3d coords and no parent section.
                       nbranch = 1
 
