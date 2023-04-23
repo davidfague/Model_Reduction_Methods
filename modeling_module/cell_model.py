@@ -41,8 +41,7 @@ class cell_model():
     self.sec_id_in_seg = []  # index of the first segment of each section in the segment list
     self.sec_angs = [] # list of angles that were used to branch the cell
     self.sec_rots = []
-    if gen_3d==True:
-      self.__generate_sec_coords()
+    self.__generate_sec_coords()
     self.__store_segments()
     self.__set_spike_recorder()
     self.__calc_seg_coords()
@@ -216,6 +215,7 @@ class cell_model():
                   sec.pt3dadd(*pt1, sec.diam)
               else:
                   if sec.parentseg() is not None:
+                      print(sec,"is attached to None")
                       pseg = sec.parentseg()
                       psec = pseg.sec
                       if (psec in self.apic) and (psec is not self.apic[0]): # branch
@@ -285,6 +285,95 @@ class cell_model():
                   sec.pt3dadd(*pt1, sec.diam)
               if int(sec.L) != int(sec_length):
                 print('Error: generation of 3D coordinates resulted in change of section length for',sec,'from',sec_length,'to',sec.L)
+
+  def __generate_sec_coords__old(self):
+        '''
+        Note: need to improve branching so that it is random direction in a quadrant of a sphere rather than x-y plane
+        takes a cell that has no n3d() coordinates and gives new coordinates
+        by choosing an arbitrary direction for the subtree to move
+        '''
+        section_obj_list= self.all
+        # print(section_obj_list)
+        axial=False
+        parent_sections=[] #list for already seen parent_sections of this type
+        for sec in section_obj_list:
+          if sec.n3d() != 0:
+            print("Generating 3D coordinates for: ",sec)
+            sec_length=sec.L
+            if sec is self.soma:
+              self.sec_angs.append(0)
+              self.sec_rots.append(0)
+              # pt0 = [0., -1 * sec.diam, 0.] #does not seem to preserve soma shape , but need to make sure soma children begin at correct 3d coordinate.
+              # pt1 = [0., 0., 0.]
+              # sec.pt3dclear()
+              # sec.pt3dadd(*pt0, sec.diam)
+              # sec.pt3dadd(*pt1, sec.diam)
+              if sec.nseg != 1:
+                print('Changing soma nseg from',sec.nseg,'to 1')
+                sec.nseg = 1
+            else:
+              if sec.parentseg() is not None:
+                psec=sec.parentseg().sec
+                if (psec in self.apic) and (psec is not self.apic[0]): # branch
+                  # print('branch')
+                  nbranch = len(psec.children())
+                else:
+                  nbranch=1
+              else:
+                psec=None # may need to provide more implementation in the case of no 3d coords and no parent section.
+                nbranch=1
+
+              # rot = 2 * math.pi/nbranch
+              rot=np.random.uniform(low=0,high=2*np.pi)# rot can be used to uniformly rotate branches if i=parent_sections.count(psec) and rot = 2 * math.pi/nbranch
+
+              i=1 #i can be used to uniformly rotate the sections if rot = 2 * math.pi/nbranch and i=parent_sections.count(psec)
+              # if nbranch==1:
+              #   i=1
+              # else:
+              #   i=parent_sections.count(psec)
+
+              parent_sections.append(psec)
+              # print("sec: ",sec, "|nbranch: ",nbranch,"|i: ,",i,"|parent_sections:",parent_sections)
+              length=sec.L
+              diameter=sec.diam
+              fullsecname = sec.name()
+              # print(fullsecname)
+              sec_type = fullsecname.split(".")[1][:4]
+              # print(sec_type)
+              if sec_type == "apic":
+                if sec==self.apic[0]: # trunk
+                  ang=1.570796327
+                else:
+                  # ang=np.random.uniform(low=0,high=np.pi) #branches
+                  ang=np.random.normal(loc=np.pi/2,scale=0.5) # could add limits to ang (if ang>val:ang=val)
+              elif sec_type=="dend":
+                # ang=-np.random.uniform(low=0,high=np.pi)
+                ang=-np.random.normal(loc=np.pi/2,scale=0.5) # could add limits to ang (if ang>val:ang=val)
+              elif sec_type=="axon":
+                ang=-1.570796327
+              else:
+                print(sec,sec_type,' is not apic, dend or axon')
+                ang=0
+              if axial == True:
+                x = 0
+                y = length*((ang>=0)*2-1)
+              else:
+                x = length * math.cos(ang)
+                y = length * math.sin(ang)
+              self.sec_angs.append(ang)
+              self.sec_rots.append(i*rot)
+              #find starting position #need to update to use parent segment coordinates instead of using first section coordinate
+              pt0 = [psec.x3d(1), psec.y3d(1), psec.z3d(1)]
+              pt1 = [0., 0., 0.]
+              pt1[1] = pt0[1] + y
+              pt1[0] = pt0[0] + x * math.cos(i * rot)
+              pt1[2] = pt0[2] + x * math.sin(i * rot)
+              # print(sec,i*rot)
+              sec.pt3dclear()q`
+              sec.pt3dadd(*pt0, sec.diam)
+              sec.pt3dadd(*pt1, sec.diam)
+            if int(sec.L) != int(sec_length):
+              print('Error: generation of 3D coordinates resulted in change of section length for',sec,'from',sec_length,'to',sec.L)
 
   def __generate_geometry_file(self):
     '''
@@ -454,16 +543,17 @@ class cell_model():
       with h5py.File(reportname, 'w') as f:
           f.create_dataset("report/biophysical/data", data=dataname)
 
-  def plot_seg_heatmap(self, seg_df, color_column, sub_type=None):
+  def plot_seg_heatmap(self, seg_df, color_column, subtype=None):
       '''
       Plots a heatmap of a segment dataframe, using a specified column for color
       color_column  :   attribute that is per segment
       Can update segments dataframe so that is instead a segment class with the option of saving the dataframe when initializeing the cell?
       '''
-      if isinstance(getattr(self, color_column), list):
-          color_data = np.concatenate(getattr(self, color_column))
+      #may be able to replace seg_df with seg_info or self or something
+      if isinstance(getattr(seg_df, color_column), list):
+          color_data = np.concatenate(getattr(seg_df, color_column))
       else:
-          color_data = getattr(self, color_column)
+          color_data = getattr(seg_df, color_column)
           
       if isinstance(color_data, dict):
           if sub_type is not None:
