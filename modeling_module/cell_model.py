@@ -198,7 +198,7 @@ class cell_model():
       axial = False
       parent_sections = [] # list for already seen parent_sections of this type
       for sec in section_obj_list:
-          if sec.n3d() == 0:
+          if sec.n3d() is not None:
               print("Generating 3D coordinates for: ", sec)
               sec_length = sec.L
               if sec is self.soma:
@@ -369,7 +369,7 @@ class cell_model():
               pt1[0] = pt0[0] + x * math.cos(i * rot)
               pt1[2] = pt0[2] + x * math.sin(i * rot)
               # print(sec,i*rot)
-              sec.pt3dclear()q`
+              sec.pt3dclear()
               sec.pt3dadd(*pt0, sec.diam)
               sec.pt3dadd(*pt1, sec.diam)
             if int(sec.L) != int(sec_length):
