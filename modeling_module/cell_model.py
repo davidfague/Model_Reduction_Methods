@@ -61,13 +61,13 @@ class cell_model():
       p05 = np.empty((self._nseg, 3))
       r = np.empty(self._nseg)
       for isec, sec in enumerate(self.all):
-          iseg = self.sec_id_in_seg[isec]
           nseg = sec.nseg
-          pt0 = np.array([sec.x3d(0), sec.y3d(0), sec.z3d(0)])
-          for i in range(sec.n3d()-1):
-              arc_length_before = sec.arc3d(i)
-              arc_length_after = sec.arc3d(i+1)
-              for seg in sec:
+          for iseg in range(isec*nseg, (isec+1)*nseg):
+              pt0 = np.array([sec.x3d(0), sec.y3d(0), sec.z3d(0)])
+              for i in range(sec.n3d()-1):
+                  arc_length_before = sec.arc3d(i)
+                  arc_length_after = sec.arc3d(i+1)
+                  seg = sec(iseg-isec*nseg)
                   if (arc_length_before/sec.L) <= seg.x <= (arc_length_after/sec.L):
                       # seg.x is between 3d coordinates i and i+1
                       seg_x_between_coordinates = (seg.x * sec.L - arc_length_before) / (arc_length_after - arc_length_before)
@@ -80,10 +80,8 @@ class cell_model():
                       pt0 = (x_before, y_before, z_before)
                       pt1 = (x_coord, y_coord, z_coord)
                       pt2 = (x_after, y_after, z_after)
-                      self.seg_coords[iseg]['dl'] = sec.L/nseg
-                      self.seg_coords[iseg]['pc'] = pt1
-                      self.seg_coords[iseg]['r'] = seg.diam/2
-                      iseg += 1
+                      self.seg_coords[iseg] = {'dl': sec.L/nseg, 'pc': pt1, 'r': seg.diam/2}
+      return self.seg_coords
     
 
   def __calc_seg_coords_orig(self):
