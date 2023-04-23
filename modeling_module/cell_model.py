@@ -1,18 +1,20 @@
 from neuron import h
 from typing import Optional, Union, List
-from modeling_module.synapses import CurrentInjection, Synapse, Listed_Synapse
 import numpy as np
 import pandas as pd
 import math
 from neuron import h
 from typing import Optional, Union, List
-from modeling_module.synapses import CurrentInjection, Synapse, Listed_Synapse
 import numpy as np
 import pandas as pd
 import math
 import os
 import h5py
 import csv
+
+from stylized_module.recorder import Recorder
+from modeling_module.synapses import CurrentInjection, Synapse, Listed_Synapse
+
 class cell_model():
   '''expanded cell model class for ECP calculation
   takes hoc cell model and does bookkeeping for analysis functions
