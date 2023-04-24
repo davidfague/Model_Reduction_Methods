@@ -80,7 +80,7 @@ class cell_model():
                           self.seg_coords[seg_id] = {'p0': np.empty((nseg, 3)), 'p1': np.empty((nseg, 3)), 'p05': np.empty((nseg, 3)), 'r': np.empty(nseg)}
                       self.seg_coords[seg_id]['p0'][iseg, :] = pt0
                       self.seg_coords[seg_id]['p1'][iseg, :] = pt1
-                      self.seg_coords[seg_id]['p05'][iseg, :] = (pt0 + pt1) / 2
+                      self.seg_coords[seg_id]['p05'][iseg, :] = (np.array(pt0) + np.array(pt1)) / 2
                       self.seg_coords[seg_id]['r'][iseg] = seg.diam / 2
       for seg_id in self.seg_coords:
           self.seg_coords[seg_id]['dl'] = self.seg_coords[seg_id]['p1'] - self.seg_coords[seg_id]['p0']
