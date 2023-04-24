@@ -55,6 +55,41 @@ class cell_model():
   
   def __calc_seg_coords(self):
       """Calculate segment coordinates for ECP calculation"""
+      nseg_total = sum(sec.nseg for sec in self.all)
+      p0 = np.empty((nseg_total, 3))
+      p1 = np.empty((nseg_total, 3))
+      p05 = np.empty((nseg_total, 3))
+      r = np.empty(nseg_total)
+      seg_idx = 0
+      for sec in self.all:
+          nseg = sec.nseg
+          pt0 = np.array([sec.x3d(0), sec.y3d(0), sec.z3d(0)])
+          for i in range(sec.n3d()-1):
+              arc_length_before = sec.arc3d(i)
+              arc_length_after = sec.arc3d(i+1)
+              for seg in sec:
+                  if (arc_length_before/sec.L) <= seg.x <= (arc_length_after/sec.L):
+                      # seg.x is between 3d coordinates i and i+1
+                      seg_x_between_coordinates = (seg.x * sec.L - arc_length_before) / (arc_length_after - arc_length_before)
+                      # calculate 3d coordinates at seg_x_between_coordinates
+                      x_before, y_before, z_before = sec.x3d(i), sec.y3d(i), sec.z3d(i)
+                      x_after, y_after, z_after = sec.x3d(i+1), sec.y3d(i+1), sec.z3d(i+1)
+                      x_coord = x_before + (x_after - x_before) * seg_x_between_coordinates
+                      y_coord = y_before + (y_after - y_before) * seg_x_between_coordinates
+                      z_coord = z_before + (z_after - z_before) * seg_x_between_coordinates
+                      pt0 = np.array([x_before, y_before, z_before])
+                      pt1 = np.array([x_coord, y_coord, z_coord])
+                      pt2 = np.array([x_after, y_after, z_after])
+                      p0[seg_idx] = pt0
+                      p1[seg_idx] = pt1
+                      p05[seg_idx] = (pt0 + pt1) / 2
+                      r[seg_idx] = seg.diam / 2
+                      seg_idx += 1
+      self.seg_coords = {'p0': p0, 'p1': p1, 'p05': p05, 'r': r, 'dl': p1 - p0}
+      return self.seg_coords 
+ 
+  def __calc_seg_coords__dict(self):
+      """Calculate segment coordinates for ECP calculation"""
       self.seg_coords = {}
       for sec in self.all:
           nseg = sec.nseg
