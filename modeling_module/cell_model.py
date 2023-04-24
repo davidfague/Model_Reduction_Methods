@@ -56,7 +56,7 @@ class cell_model():
   def __calc_seg_coords(self):
       """Calculate segment coordinates for ECP calculation"""
       self.seg_coords = {}
-      for sec in self.cell.all:
+      for sec in self.all:
           nseg = sec.nseg
           pt0 = np.array([sec.x3d(0), sec.y3d(0), sec.z3d(0)])
           for i in range(sec.n3d()-1):
