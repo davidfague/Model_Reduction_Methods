@@ -11,6 +11,7 @@ import math
 import os
 import h5py
 import csv
+import matplotlib.pyplot as plt
 
 from stylized_module.recorder import Recorder
 from modeling_module.synapses import CurrentInjection, Synapse, Listed_Synapse
