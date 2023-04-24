@@ -78,8 +78,8 @@ class cell_model():
                       seg_id = self.segments.index(seg)
                       if seg_id not in self.seg_coords:
                           self.seg_coords[seg_id] = {'p0': np.empty((nseg, 3)), 'p1': np.empty((nseg, 3)), 'p05': np.empty((nseg, 3)), 'r': np.empty(nseg)}
-                      self.seg_coords[seg_id]['p0'][iseg, :] = pt0
-                      self.seg_coords[seg_id]['p1'][iseg, :] = pt1
+                      self.seg_coords[seg_id]['p0'][iseg, :] = np.array(pt0)
+                      self.seg_coords[seg_id]['p1'][iseg, :] = np.array(pt1)
                       self.seg_coords[seg_id]['p05'][iseg, :] = (np.array(pt0) + np.array(pt1)) / 2
                       self.seg_coords[seg_id]['r'][iseg] = seg.diam / 2
       for seg_id in self.seg_coords:
