@@ -328,7 +328,7 @@ class cell_model():
                         ang = 0
                   elif sec_type == "dend":
                       # ang = -np.random.uniform(low=0, high=np.pi)
-                      ang = -np.random.normal(loc=np.pi/2, scale=0.5) # could add limits to ang (if ang>val:ang=val)
+                      ang = np.random.normal(loc=-np.pi/2, scale=0.5) # could add limits to ang (if ang>val:ang=val)
                       if ang < -np.pi:
                         ang=-np.pi
                       elif ang > 0:
