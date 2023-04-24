@@ -85,7 +85,7 @@ class cell_model():
                       p05[seg_idx] = (pt0 + pt1) / 2
                       r[seg_idx] = seg.diam / 2
                       seg_idx += 1
-      self.seg_coords = {'p0': p0, 'p1': p1, 'p05': p05, 'r': r, 'dl': p1 - p0}
+      self.seg_coords = {'p0': p0, 'p1': p1, 'pc': p05, 'r': r, 'dl': p1 - p0}
       return self.seg_coords 
  
   def __calc_seg_coords__dict(self):
