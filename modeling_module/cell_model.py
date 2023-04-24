@@ -266,6 +266,7 @@ class cell_model():
       section_obj_list = self.all
       axial = False
       parent_sections = [] # list for already seen parent_sections of this type
+      seen_dend=[]
       for sec in section_obj_list:
           if sec.n3d() == 0: #better to just give all sections only 2 3d coordinates
               print("Generating 3D coordinates for: ", sec)
@@ -287,9 +288,11 @@ class cell_model():
                       pseg = sec.parentseg()
                       psec = pseg.sec
                       if (psec in self.apic) and (psec is not self.apic[0]): # branch
-                          nbranch = len(psec.children())
+                          nbranch = len(psec.children()) #branches
+                      elif sec in cell.dend:
+                          nbranch = len(psec.children() in self.dend) #basal dendrites
                       else:
-                          nbranch = 1
+                          nbranch = 1 #trunk, axon
                   else:
                       print(sec,"is attached to None")
                       psec = None # may need to provide more implementation in the case of no 3d coords and no parent section.
@@ -299,7 +302,13 @@ class cell_model():
 
                   i = 1 # i can be used to uniformly rotate the sections if rot = 2 * math.pi/nbranch and i=parent_sections.count(psec)
 
-                  parent_sections.append(psec)
+    #               i=1 #i can be used to uniformly rotate the sections if rot = 2 * math.pi/nbranch and i=parent_sections.count(psec)
+                  if nbranch==1:
+                    i=1
+                  else:
+                    i=parent_sections.count(psec)
+                  if sec is (not self.apic[0]) or (in self.axon):
+                    parent_sections.append(psec)
 
                   length = sec.L
 
@@ -409,7 +418,7 @@ class cell_model():
               # else:
               #   i=parent_sections.count(psec)
 
-              parent_sections.append(psec)
+#               parent_sections.append(psec)
               # print("sec: ",sec, "|nbranch: ",nbranch,"|i: ,",i,"|parent_sections:",parent_sections)
               length=sec.L
               diameter=sec.diam
