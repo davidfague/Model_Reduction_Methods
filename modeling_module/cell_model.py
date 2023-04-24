@@ -75,7 +75,7 @@ class cell_model():
                       pt0 = (x_before, y_before, z_before)
                       pt1 = (x_coord, y_coord, z_coord)
                       pt2 = (x_after, y_after, z_after)
-                      seg_id = seg.sec_i * seg.sec.nseg + seg.i
+                      seg_id = self.segments.index(seg)
                       if seg_id not in self.seg_coords:
                           self.seg_coords[seg_id] = {'p0': np.empty((nseg, 3)), 'p1': np.empty((nseg, 3)), 'p05': np.empty((nseg, 3)), 'r': np.empty(nseg)}
                       self.seg_coords[seg_id]['p0'][seg.i, :] = pt0
