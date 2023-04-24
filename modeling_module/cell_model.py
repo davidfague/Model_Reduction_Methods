@@ -269,7 +269,7 @@ class cell_model():
       parent_sections = [] # list for already seen parent_sections of this type
       seen_dend=[]
       for sec in section_obj_list:
-          if sec.n3d() == 0: #better to just give all sections only 2 3d coordinates
+#           if sec.n3d() == 0: #better to just give all sections only 2 3d coordinates
               print("Generating 3D coordinates for: ", sec)
               sec_length = sec.L
               if sec is self.soma:
