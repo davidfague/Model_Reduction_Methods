@@ -290,8 +290,8 @@ class cell_model():
                       psec = pseg.sec
                       if (psec in self.apic) and (psec is not self.apic[0]): # branch
                           nbranch = len(psec.children()) #branches
-                      elif sec in cell.dend:
-                          nbranch = len(psec.children() in self.dend) #basal dendrites
+                      elif sec in self.dend:
+                          nbranch = len(psec.children())-2 #basal dendrites
                       else:
                           nbranch = 1 #trunk, axon
                   else:
