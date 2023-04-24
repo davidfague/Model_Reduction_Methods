@@ -416,14 +416,14 @@ class cell_model():
               fullsecname = sec.name()
               # print(fullsecname)
               sec_type = fullsecname.split(".")[1][:4]
-              # print(sec_type)
+              print(sec_type)
               if sec_type == "apic":
                 if sec==self.apic[0]: # trunk
                   ang=1.570796327
                 else:
                   # ang=np.random.uniform(low=0,high=np.pi) #branches
                   ang=np.random.normal(loc=np.pi/2,scale=0.5) # could add limits to ang (if ang>val:ang=val)
-              elif sec_type=="dend":
+              elif sec in self.dend:
                 # ang=-np.random.uniform(low=0,high=np.pi)
                 ang=-np.random.normal(loc=np.pi/2,scale=0.5) # could add limits to ang (if ang>val:ang=val)
               elif sec_type=="axon":
