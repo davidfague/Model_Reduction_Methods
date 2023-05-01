@@ -859,6 +859,7 @@ def adjust_new_tree_synapses(num_of_subtrees, roots_of_subtrees,
             # If not, move the synapse to this segment.
             for PP in section_for_synapse(x).point_processes():
                 if type_of_point_process(PP) not in PP_params_dict:
+                    print("adding",PP,"to PP_params_dict")
                     add_PP_properties_to_dict(PP, PP_params_dict)
 
                 if synapse_properties_match(synapse, PP, PP_params_dict):
