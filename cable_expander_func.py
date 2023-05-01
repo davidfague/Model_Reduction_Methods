@@ -199,6 +199,8 @@ def cable_expander(original_cell,
         basals, apicals,
         cell,
         reduction_frequency)
+    
+    print("PP_params_dict: ",PP_params_dict)
     for synapse,params in PP_params_dict.items():
       print(synapse,params)
 
