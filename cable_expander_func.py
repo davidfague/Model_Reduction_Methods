@@ -858,6 +858,7 @@ def adjust_new_tree_synapses(num_of_subtrees, roots_of_subtrees,
             # If there's such a synapse link the original NetCon with this point processes
             # If not, move the synapse to this segment.
             for PP in section_for_synapse(x).point_processes():
+                print(PP_params_dict)
                 if type_of_point_process(PP) not in PP_params_dict:
                     print("adding",PP,"to PP_params_dict")
                     add_PP_properties_to_dict(PP, PP_params_dict)
