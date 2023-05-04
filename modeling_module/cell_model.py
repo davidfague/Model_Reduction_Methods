@@ -180,7 +180,7 @@ class cell_model():
         nseg += sec.nseg
         for seg in sec:
             self.segments.append(seg)
-            self.__store_point_processes(seg)
+#             self.__store_point_processes(seg) #may be outdated (was storing netcons from netcons list into self.injection 
     self._nseg = nseg
 
   def __store_synapses_list(self):
@@ -216,6 +216,9 @@ class cell_model():
         print('Warning: ', synapse, 'does not have any netcons pointing at it. if synapse is None then deleted synapse may be stored in synapses_list')
 
   def __store_point_processes(self,seg):
+    '''
+    May be outdated. should not be used. May need to change self.injection
+    '''
     for pp in seg.point_processes():
         self.injection.append(pp)
 
