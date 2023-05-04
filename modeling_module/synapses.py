@@ -187,7 +187,8 @@ class Listed_Synapse():
         if gmax is not None:
             self.gmax = gmax
         if self.gmax_var == '_nc_weight':
-            self.nc.weight[0] = self.gmax
+            for nc in self.ncs:
+                nc.weight[0] = self.gmax
         else:
             setattr(self.syn, self.gmax_var, self.gmax)
                   
