@@ -302,14 +302,14 @@ class cell_model():
                       psec = None # may need to provide more implementation in the case of no 3d coords and no parent section.
                       nbranch = 1
                   
-                  rot = 2 * math.pi / self._nbranch
+                  rot = 2 * math.pi / nbranch
 #                   rot = np.random.uniform(low=0, high=2 * np.pi) # rot can be used to uniformly rotate branches if i=parent_sections.count(psec) and rot = 2 * math.pi/nbranch
 
-                  i = 1 # i can be used to uniformly rotate the sections if rot = 2 * math.pi/nbranch and i=parent_sections.count(psec)
+                  i = 0 # i can be used to uniformly rotate the sections if rot = 2 * math.pi/nbranch and i=parent_sections.count(psec)
 
     #               i=1 #i can be used to uniformly rotate the sections if rot = 2 * math.pi/nbranch and i=parent_sections.count(psec)
                   if nbranch==1:
-                    i=1
+                    i=0
                   else:
                     i=parent_sections.count(psec)
                   if (sec is not self.apic[0]) and (sec not in self.axon):
