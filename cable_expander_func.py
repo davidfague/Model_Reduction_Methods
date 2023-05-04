@@ -869,6 +869,7 @@ def adjust_new_tree_synapses(num_of_subtrees, roots_of_subtrees,
                       netcon.setpost(PP)
                     break
             else:  # If for finish the loop -> first appearance of this synapse
+                print("moving", synapse, "to",section_for_synapse(x))
                 synapse.loc(x, sec=section_for_synapse)
                 new_synapses_list.append(synapse)
 
