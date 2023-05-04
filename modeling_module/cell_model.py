@@ -301,8 +301,9 @@ class cell_model():
                       print(sec,"is attached to None")
                       psec = None # may need to provide more implementation in the case of no 3d coords and no parent section.
                       nbranch = 1
-
-                  rot = np.random.uniform(low=0, high=2 * np.pi) # rot can be used to uniformly rotate branches if i=parent_sections.count(psec) and rot = 2 * math.pi/nbranch
+                  
+                  rot = 2 * math.pi / self._nbranch
+#                   rot = np.random.uniform(low=0, high=2 * np.pi) # rot can be used to uniformly rotate branches if i=parent_sections.count(psec) and rot = 2 * math.pi/nbranch
 
                   i = 1 # i can be used to uniformly rotate the sections if rot = 2 * math.pi/nbranch and i=parent_sections.count(psec)
 
