@@ -1050,7 +1050,8 @@ def duplicate_synapse(synapse,seg,PP_params_dict):
     uses the dictionary for:
     '''
     syn_type = synapse.hname().split('[')[0]  # Remove index from syn_type
-    new_synapse = eval('h.'+syn_type)(seg)
+    new_synapse = getattr(h, syn_type)(seg)
+#     new_synapse = eval('h.'+syn_type)(seg) # trying to replace with above line.
     #new_synapse = h.execute(syn_type)(seg) alternative may be more efficient but did not work
             # extract the parameters using hoc instead of PyNeuronToolbox
     params_were_same=[]
