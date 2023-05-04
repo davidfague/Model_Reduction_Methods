@@ -151,16 +151,16 @@ class Listed_Synapse():
     def __synapse_type(self, syn_type):
         if syn_type == 'AlphaSynapse1':
             # Reversal potential (mV); Synapse time constant (ms)
-            self.syn_params = {'e': 0., 'tau': 2.0}
+#             self.syn_params = {'e': 0., 'tau': 2.0} # parameters should already be assigned; shouldn't need this attribute; have a dictionary for synapse parameters.
             # Variable name of maximum conductance (uS)
             self.gmax_var = 'gmax'
         elif syn_type == 'Exp2Syn':
-            self.syn_params = {'e': 0., 'tau1': 1.0, 'tau2': 3.0}
+#             self.syn_params = {'e': 0., 'tau1': 1.0, 'tau2': 3.0}
             self.gmax_var = '_nc_weight'
         else:
             raise ValueError("Synpase type not defined.")
         self.syn_type = syn_type
-        self.pp_obj = getattr(h, syn_type)(self.get_section()(self.loc))
+#         self.pp_obj = getattr(h, syn_type)(self.get_section()(self.loc)) # not necessary to create new synapse object in this class
 
     def setup(self,record):
         if record:
