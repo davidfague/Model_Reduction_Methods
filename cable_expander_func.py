@@ -869,9 +869,11 @@ def adjust_new_tree_synapses(num_of_subtrees, roots_of_subtrees,
                       netcon.setpost(PP)
                     break
             else:  # If for finish the loop -> first appearance of this synapse
+                ##########testing
                 if type_of_point_process(synapse) not in PP_params_dict:
-                    print("adding",PP,"to PP_params_dict")
-                    add_PP_properties_to_dict(PP, PP_params_dict)
+                    print("adding",synapse,"to PP_params_dict")
+                    add_PP_properties_to_dict(synapse, PP_params_dict)
+                #########
                 print("moving", synapse, "from",synapse_location,"to",section_for_synapse(x))
                 synapse.loc(x, sec=section_for_synapse)
                 new_synapses_list.append(synapse)
