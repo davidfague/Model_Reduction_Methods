@@ -144,7 +144,23 @@ class Listed_Synapse():
         self.ncs = netcon_objs # NetCon objects pointing toward point process
         self.rec_vec = None  # vector for recording
         self.current_type = None # string denotes the ionic current variable that is being recording such as "i", "iampa_inmda", or "igaba" to
+        self.__synapse_type(self.pp_obj.hname().split('[')[0])  # Remove index from synapse name to get syn_type
         self.setup(record)
+
+    # PRIVATE METHODS
+    def __synapse_type(self, syn_type):
+        if syn_type == 'AlphaSynapse1':
+            # Reversal potential (mV); Synapse time constant (ms)
+            self.syn_params = {'e': 0., 'tau': 2.0}
+            # Variable name of maximum conductance (uS)
+            self.gmax_var = 'gmax'
+        elif syn_type == 'Exp2Syn':
+            self.syn_params = {'e': 0., 'tau1': 1.0, 'tau2': 3.0}
+            self.gmax_var = '_nc_weight'
+        else:
+            raise ValueError("Synpase type not defined.")
+        self.syn_type = syn_type
+        self.pp_obj = getattr(h, syn_type)(self.get_section()(self.loc))
 
     def setup(self,record):
         if record:
@@ -166,7 +182,7 @@ class Listed_Synapse():
               except:
                 self.rec_vec = h.Vector(*size).record(self.pp_obj._ref_i)
                 self.current_type = "i"
-                
+    # PUBLIC METHODS       
     def set_gmax(self, gmax: float = None):
         if gmax is not None:
             self.gmax = gmax
