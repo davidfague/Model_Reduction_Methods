@@ -291,7 +291,7 @@ class cell_model():
                   if sec.parentseg() is not None:
                       pseg = sec.parentseg()
                       psec = pseg.sec
-                      if (psec in self.apic) and (psec is not self.apic[0]): # branch
+                      if (psec in self.apic) and (sec is not self.apic[0]): # branch
                           nbranch = len(psec.children()) #branches
                       elif sec in self.dend:
                           nbranch = len(psec.children())-2 #basal dendrites
