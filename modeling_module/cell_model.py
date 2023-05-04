@@ -311,7 +311,7 @@ class cell_model():
                     i=1
                   else:
                     i=parent_sections.count(psec)
-                  if sec is not self.apic[0] or sec in self.axon:
+                  if (sec is not self.apic[0]) and (sec is not in self.axon):
                     parent_sections.append(psec)
 
                   length = sec.L
