@@ -166,6 +166,14 @@ class Listed_Synapse():
               except:
                 self.rec_vec = h.Vector(*size).record(self.pp_obj._ref_i)
                 self.current_type = "i"
+                
+    def set_gmax(self, gmax: float = None):
+        if gmax is not None:
+            self.gmax = gmax
+        if self.gmax_var == '_nc_weight':
+            self.nc.weight[0] = self.gmax
+        else:
+            setattr(self.syn, self.gmax_var, self.gmax)
                   
 
 class MultiSynCurrent(object):
