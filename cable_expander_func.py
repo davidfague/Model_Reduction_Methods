@@ -215,7 +215,8 @@ def cable_expander(original_cell,
     print("number of reduced synapses before duplicating synapses to branches:",len(new_synapses_list))
     new_synapses_list=distribute_branch_synapses(branches,netcons_list,new_synapses_list,PP_params_dict,syn_to_netcon) #adjust synapses
     print("number of reduced synapses after duplicating synapses to branches:",len(new_synapses_list))
-    
+    syn_to_netcon = get_syn_to_netcons(netcons_list) # dictionary mapping netcons to their synapse
+    print("netcon mapping after expansion:",syn_to_netcon)
     # create segment to segment mapping
     print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),"Mapping segments")
     original_seg_to_reduced_seg, reduced_seg_to_original_seg, = create_seg_to_seg(
