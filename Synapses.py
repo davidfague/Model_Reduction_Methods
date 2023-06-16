@@ -80,13 +80,12 @@ class Synapse(PointCurrent):
     '''
     class for adding synapses
     '''
-    def __init__(self, segment, current_type: str = 'exc',
+    def __init__(self, segment,
                   syn_mod: str = 'Exp2Syn', gmax: float = 0.01,
                   record: bool = False):
         super().__init__(segment)
         self.stim = stim
         self.gmax = gmax
-        self.current_type = current_type
         self.__synapse_type(syn_mod)
         self.setup(record)
         self.ncs=[]
