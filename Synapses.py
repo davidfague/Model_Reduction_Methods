@@ -81,37 +81,37 @@ class Synapse(PointCurrent):
     class for adding synapses
     '''
     def __init__(self, segment, current_type: str = 'exc',
-                  syn_type: str = 'Exp2Syn', gmax: float = 0.01,
+                  syn_mod: str = 'Exp2Syn', gmax: float = 0.01,
                   record: bool = False):
         super().__init__(segment)
         self.stim = stim
         self.gmax = gmax
         self.current_type = current_type
-        self.__synapse_type(syn_type)
+        self.__synapse_type(syn_mod)
         self.setup(record)
         self.ncs=[]
 
     # PRIVATE METHODS
-    def __synapse_type(self, syn_type):
-        if syn_type == 'AlphaSynapse1':
+    def __synapse_type(self, syn_mod):
+        if syn_mod == 'AlphaSynapse1':
             # Reversal potential (mV); Synapse time constant (ms)
             self.syn_params = {'e': 0., 'tau': 2.0}
             # Variable name of maximum conductance (uS)
             self.gmax_var = 'gmax'
-        elif syn_type == 'Exp2Syn':
+        elif syn_mod == 'Exp2Syn':
             self.syn_params = {'e': 0., 'tau1': 1.0, 'tau2': 3.0}
             self.gmax_var = '_nc_weight'
-        elif syn_type == 'pyr2pyr':
+        elif syn_mod == 'pyr2pyr':
             self.gmax_var = 'initW'
-        elif syn_type == 'int2pyr':
+        elif syn_mod == 'int2pyr':
             self.gmax_var = 'initW'
-        elif 'AMPA_NMDA' in syn_type:
+        elif 'AMPA_NMDA' in syn_mod:
             self.gmax_var = 'initW'
-        elif 'GABA_AB' in syn_type:
+        elif 'GABA_AB' in syn_mod:
             self.gmax_var = 'initW'
         else:
             raise ValueError("Synpase type not defined.")
-        self.syn_type = syn_type
+        self.syn_type = syn_mod
         self.pp_obj = getattr(h, syn_type)(self.segment)
 
     def __setup_synapse(self):
