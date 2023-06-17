@@ -35,3 +35,41 @@ class Reductor():
       return reduced_cell, synapses_list, netcons_list, txt
     else:
       return reduced_cell, synapses_list, netcons_list
+
+  def get_other_seg_from_seg_to_seg(segments, seg=str,seg_to_seg=dict):
+    '''
+    WORK IN PROGRESS
+    segments: list of segments to search through
+    seg: str or nrn.segment for which you wish to return the mapped segments
+    works with find_seg_to_seg, get_str_from_dict, and get_seg_from_str to return segment objects from seg_to_seg
+    '''
+    seg_mapping = find_seg_to_seg(seg, seg_to_seg)
+    # seg_to_find=not_original_seg
+    seg_to_find_str = get_str_from_dict(seg_mapping, seg_to_find)
+    seg = get_seg_from_str(segments, seg_to_find_str)
+    return seg
+    
+  
+  def find_seg_to_seg(seg=str, seg_to_seg=dict):
+    '''
+    TO DO:
+    Finds and returns a str of the given segment's mapping where the segment could be either a key (original model seg) or item (reduced model seg)
+    in the case where the new seg is an item from a cable_expand model, the dictionary will have {original seg: reduced seg, reduced seg, ... } if seg is expanded section
+    can add a bool for if you specify reduced seg in this case to only return {original seg: desired reduced seg}
+    return mapping
+    '''
+    pass
+
+
+  def get_str_from_dict():
+    '''
+    separates a desired string from a dictionary (to use in combination
+    '''
+    pass
+  
+  def get_seg_from_str(segments, str):
+    '''
+    searches list of segments for segment corresponding to str
+    returns segment
+    '''
+    pass
