@@ -112,13 +112,13 @@ class SpikeGenerator():
 		fr_profile = minmax(fr_profile)+0.5
 		return fr_profile
 
-	#TODO: fix rate_prof
+	#TODO:
 	def rhythmic_modulation(fr_profile, rhythmic_f, rhythmic_mod, t):
 		'''
 		method for modulating spike_trains by rhythmicity
 		'''
 		A = fr_profile / ((1/rhythmic_mod)-1)
-		rate_prof[0,:] = A*np.sin((2 * np.pi * rhythmic_f * t)+P) + fr_profile
+		fr_profile[0,:] = A*np.sin((2 * np.pi * rhythmic_f * t)+P) + fr_profile
 		return fr_profile
 	
 	#TODO: fix call
@@ -155,4 +155,14 @@ class SpikeGenerator():
 		else: # mean firing_rate is a float
 			mean_fr = mean_firing_rate
 		return mean_fr
-	  
+
+	#TODO: Walt's Check, better implementation for complete removal of inputs: netcon removed from synapse.ncs, netcons lists
+	def remove_inputs(synapses=None,netcons=None):
+		''' Makes netcons inactive (do not deliver their spike trains) but netcons remove present '''
+		if synapses:
+			for synapse in synapses:
+				for netcon in synapse.ncs:
+					netcon.active(False)
+		if netcons:
+			for netcon in netcons:
+				netcon.active(False)
